@@ -12,6 +12,13 @@ M.join_path = function()
   return '/'
 end
 
+M.sep = function()
+  if M.is_windows() then
+    return ';'
+  end
+  return ':'
+end
+
 M.extension= function()
   if M.is_windows() then
     return '.exe'
