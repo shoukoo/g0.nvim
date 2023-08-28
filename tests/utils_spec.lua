@@ -1,4 +1,6 @@
-local mock = require('luassert.mock')
+local mock = require 'luassert.mock'
+local spy = require "luassert.spy"
+local match = require 'luassert.match'
 
 describe("minigo.utils", function()
 
@@ -123,6 +125,23 @@ describe("minigo.install", function()
 
     mock.revert(o)
     mock.revert(loop)
+  end)
+
+  it("install an unsupported package", function()
+
+    spy.on(vim, "notify")
+    require("minigo.install").install("invalid")
+    assert.spy(vim.notify).was_called(1)
+    assert.spy(vim.notify).was_called_with("command invalid not supported, please update install.lua, or manually install it", vim.log.levels.WARN)
+
+  end)
+
+  it("install gopls package", function()
+    spy.on(vim.fn, "jobstart" )
+    require("minigo.install").install("gopls")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with({"go", "install", "golang.org/x/tools/gopls@latest", }, match.is_table() )
+
   end)
 
 end)
