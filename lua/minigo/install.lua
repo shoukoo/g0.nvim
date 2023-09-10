@@ -49,7 +49,7 @@ M.install = function(pkg)
     return
   end
 
-  if M.is_installed(pkg)then
+  if M.is_installed(pkg) then
     return
   end
 
