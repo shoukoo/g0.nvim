@@ -132,15 +132,25 @@ describe("minigo.install", function()
     spy.on(vim, "notify")
     require("minigo.install").install("invalid")
     assert.spy(vim.notify).was_called(1)
-    assert.spy(vim.notify).was_called_with("command invalid not supported, please update install.lua, or manually install it", vim.log.levels.WARN)
+    assert.spy(vim.notify).was_called_with("command invalid not supported, please update install.lua, or manually install it"
+      , vim.log.levels.WARN)
 
   end)
 
-  it("install gopls package", function()
-    spy.on(vim.fn, "jobstart" )
-    require("minigo.install").install("gopls")
+  it("install goimports package", function()
+
+    spy.on(vim.fn, "jobstart")
+
+    local i = require("minigo.install")
+    -- mock is_installed
+    i.is_installed = function(pkg)
+      return false
+    end
+
+    i.install('goimports')
     assert.spy(vim.fn.jobstart).was_called(1)
-    assert.spy(vim.fn.jobstart).was_called_with({"go", "install", "golang.org/x/tools/gopls@latest", }, match.is_table() )
+    assert.spy(vim.fn.jobstart).was_called_with({ "go", "install", "golang.org/x/tools/cmd/goimports@latest", },
+      match.is_table())
 
   end)
 
