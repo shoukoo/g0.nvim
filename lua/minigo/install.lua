@@ -6,10 +6,9 @@ local M = {}
 local pkgs = {
   goimports = 'golang.org/x/tools/cmd/goimports',
   gomodifytags = 'github.com/fatih/gomodifytags',
-  gopls = 'golang.org/x/tools/gopls',
-  govulncheck = 'golang.org/x/vuln/cmd/govulncheck',
+  -- gopls = 'golang.org/x/tools/gopls',
+  -- govulncheck = 'golang.org/x/vuln/cmd/govulncheck',
 
-  -- gomodifytags = 'github.com/fatih/gomodifytags',
 }
 
 M.get_path_env = function()
@@ -50,7 +49,11 @@ M.install = function(pkg)
     return
   end
 
-  local u = u .. '@latest'
+  if M.is_installed(pkg)then
+    return
+  end
+
+  u = u .. '@latest'
   local setup = { 'go', 'install', u }
 
   vim.fn.jobstart(setup, {
@@ -59,7 +62,6 @@ M.install = function(pkg)
       if type(data) == 'table' and #data > 0 then
         data = table.concat(data, ' ')
       end
-
       local msg = 'install ' .. u .. ' finished'
       if #data > 1 then
         msg = msg .. data
