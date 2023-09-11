@@ -1,6 +1,7 @@
 local mock = require 'luassert.mock'
 local spy = require "luassert.spy"
 local match = require 'luassert.match'
+local stub = require "luassert.stub"
 
 describe("minigo.utils", function()
 
@@ -154,4 +155,34 @@ describe("minigo.install", function()
 
   end)
 
+end)
+
+describe("minigo.format", function()
+  it("run goimports", function()
+    local api = mock(vim.api)
+    local fn = mock(vim.fn, true)
+    stub(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
+
+    -- mock functions
+    api.nvim_get_current_buf = function()
+      return 1
+    end
+    api.nvim_buf_get_name = function()
+      return "/tmp/go/main.go"
+    end
+    fn.getbufinfo = function()
+      return { { changed = 1 } }
+    end
+
+    require("minigo.format").goimports()
+    assert.spy(vim.fn.jobstart).was_called(2)
+    assert.spy(vim.cmd).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with({ "goimports", "-w", "-l", "/tmp/go/main.go" },
+      match.is_table())
+
+    mock.revert(fn)
+    mock.revert(api)
+    vim.cmd:revert()
+  end)
 end)
