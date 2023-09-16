@@ -3,10 +3,10 @@ local spy = require "luassert.spy"
 local match = require 'luassert.match'
 local stub = require "luassert.stub"
 
-describe("minigo.utils", function()
+describe("g0.utils", function()
 
   it("can be required", function()
-    require("minigo.utils")
+    require("g0.utils")
   end)
 
   it("windows machine", function()
@@ -14,7 +14,7 @@ describe("minigo.utils", function()
     loop.os_uname.returns({
       sysname = "Windows",
     })
-    assert.equal(true, require "minigo.utils".is_windows())
+    assert.equal(true, require "g0.utils".is_windows())
 
     mock.revert(loop)
   end)
@@ -24,7 +24,7 @@ describe("minigo.utils", function()
     loop.os_uname.returns({
       sysname = "MacOS",
     })
-    assert.equal(false, require "minigo.utils".is_windows())
+    assert.equal(false, require "g0.utils".is_windows())
 
     mock.revert(loop)
   end)
@@ -34,7 +34,7 @@ describe("minigo.utils", function()
     loop.os_uname.returns({
       sysname = "Windows",
     })
-    assert.equal("\\", require "minigo.utils".join_path())
+    assert.equal("\\", require "g0.utils".join_path())
 
     mock.revert(loop)
   end)
@@ -44,7 +44,7 @@ describe("minigo.utils", function()
     loop.os_uname.returns({
       sysname = "MacOS",
     })
-    assert.equal("", require "minigo.utils".extension())
+    assert.equal("", require "g0.utils".extension())
 
     mock.revert(loop)
   end)
@@ -54,7 +54,7 @@ describe("minigo.utils", function()
     loop.os_uname.returns({
       sysname = "Windows",
     })
-    assert.equal(".exe", require "minigo.utils".extension())
+    assert.equal(".exe", require "g0.utils".extension())
 
     mock.revert(loop)
   end)
@@ -64,22 +64,22 @@ describe("minigo.utils", function()
     loop.os_uname.returns({
       sysname = "MacOS",
     })
-    assert.equal("/", require "minigo.utils".join_path())
+    assert.equal("/", require "g0.utils".join_path())
 
     mock.revert(loop)
   end)
 end)
 
-describe("minigo.install", function()
+describe("g0.install", function()
 
   it("can be required", function()
-    require("minigo.install")
+    require("g0.install")
   end)
 
   it("get path env", function()
     local o = mock(os, true)
     o.getenv.returns("/usr/local/sbin:/usr/local/go/bin")
-    local paths = require("minigo.install").get_path_env()
+    local paths = require("g0.install").get_path_env()
     local expected = { "/usr/local/sbin", "/usr/local/go/bin" }
     for key, value in pairs(paths) do
       assert.equal(expected[key], value)
@@ -98,7 +98,7 @@ describe("minigo.install", function()
       sysname = "MacOS",
     })
 
-    local is_installed = require("minigo.install").is_installed("helloworld")
+    local is_installed = require("g0.install").is_installed("helloworld")
     assert.equal(true, is_installed)
 
     -- verify if the parameter is correct
@@ -118,7 +118,7 @@ describe("minigo.install", function()
       sysname = "Windows",
     })
 
-    local is_installed = require("minigo.install").is_installed("helloworld")
+    local is_installed = require("g0.install").is_installed("helloworld")
     assert.equal(true, is_installed)
 
     -- verify if the parameter is correct
@@ -131,7 +131,7 @@ describe("minigo.install", function()
   it("install an unsupported package", function()
 
     spy.on(vim, "notify")
-    require("minigo.install").install("invalid")
+    require("g0.install").install("invalid")
     assert.spy(vim.notify).was_called(1)
     assert.spy(vim.notify).was_called_with("command invalid not supported, please update install.lua, or manually install it"
       , vim.log.levels.WARN)
@@ -142,7 +142,7 @@ describe("minigo.install", function()
 
     spy.on(vim.fn, "jobstart")
 
-    local i = require("minigo.install")
+    local i = require("g0.install")
     -- mock is_installed
     i.is_installed = function(pkg)
       return false
@@ -157,7 +157,7 @@ describe("minigo.install", function()
 
 end)
 
-describe("minigo.format", function()
+describe("g0.format", function()
   it("run goimports", function()
     local api = mock(vim.api)
     local fn = mock(vim.fn, true)
@@ -175,7 +175,7 @@ describe("minigo.format", function()
       return { { changed = 1 } }
     end
 
-    require("minigo.format").goimports()
+    require("g0.format").goimports()
     assert.spy(vim.fn.jobstart).was_called(2)
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with({ "goimports", "-w", "-l", "/tmp/go/main.go" },

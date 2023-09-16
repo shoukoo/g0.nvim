@@ -1,7 +1,7 @@
 local M = {}
 
 M.goimports = function()
-  require('minigo.install').install("goimports")
+  require('g0.install').install("goimports")
 
   local buf = vim.api.nvim_get_current_buf()
   -- if the change is not saved or a new unsaved file then call write

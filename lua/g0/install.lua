@@ -1,5 +1,5 @@
 local uv = vim.loop
-local utils = require("minigo.utils")
+local utils = require("g0.utils")
 
 local M = {}
 
