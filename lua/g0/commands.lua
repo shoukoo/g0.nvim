@@ -6,6 +6,18 @@ local create_cmd = function(cmd, func, opt)
 end
 
 M.add_cmds = function()
+  create_cmd('G0Install', function(opts)
+    require('g0.install').install(unpack(opts.fargs))
+  end, { nargs = '*' })
+
+  create_cmd('G0InstallAll', function(_)
+    require('g0.install').install_all()
+  end)
+
+  create_cmd('G0UpdateAll', function(_)
+    require('g0.install').update_all()
+  end)
+
   create_cmd('G0Imports', function(_)
     require('g0.format').goimports()
   end)

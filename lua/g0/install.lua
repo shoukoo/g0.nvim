@@ -50,6 +50,8 @@ M.install = function(pkg)
   end
 
   if M.is_installed(pkg) then
+    local msg = 'skipped, ' .. u .. ' already installed'
+    vim.notify(msg, vim.log.levels.INFO)
     return
   end
 
@@ -77,7 +79,7 @@ M.install_all = function()
       vim.notify('installing ' .. name, vim.log.levels.INFO)
       M.install(name)
     else
-      vim.notify('skip, ' .. name .. " has been installed", vim.log.levels.INFO)
+      vim.notify('skipped, ' .. name .. " has been installed", vim.log.levels.INFO)
     end
   end
 end
