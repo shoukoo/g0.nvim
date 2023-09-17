@@ -6,6 +6,10 @@ local create_cmd = function(cmd, func, opt)
 end
 
 M.add_cmds = function()
+  create_cmd('G0TestDir', function(_)
+    require('g0.test').go_test_dir()
+  end)
+
   create_cmd('G0Install', function(opts)
     require('g0.install').install(unpack(opts.fargs))
   end, { nargs = '*' })
