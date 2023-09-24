@@ -159,31 +159,32 @@ end)
 
 describe("g0.format", function()
   it("run goimports", function()
-    local api = mock(vim.api)
-    local fn = mock(vim.fn, true)
-    stub(vim, "cmd")
-    spy.on(vim.fn, "jobstart")
 
-    -- mock functions
-    api.nvim_get_current_buf = function()
-      return 1
-    end
-    api.nvim_buf_get_name = function()
-      return "/tmp/go/main.go"
-    end
-    fn.getbufinfo = function()
-      return { { changed = 1 } }
-    end
+    -- read the golden file to get the expected result
+    local cur_dir = vim.fn.expand('%:p:h')
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. '/tests/testData/format/format_golden.go'), '\n')
 
-    require("g0.format").goimports()
-    assert.spy(vim.fn.jobstart).was_called(2)
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.fn.jobstart).was_called_with({ "goimports", "-w", "-l", "/tmp/go/main.go" },
-      match.is_table())
+    -- get the unimported go code and write it to a temporary file
+    local testFile = cur_dir .. '/tests/testData/format/format.go'
+    local lines = vim.fn.readfile(testFile)
+    local name = vim.fn.tempname() .. '.go'
+    vim.fn.writefile(lines, name)
 
-    mock.revert(fn)
-    mock.revert(api)
-    vim.cmd:revert()
+    -- edit the temporary file and call goimports func
+    local cmd = " silent exe 'e " .. name .. "'"
+    vim.cmd(cmd)
+    require('g0.format').goimports()
+
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
+
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
+
+    -- delete the temp file
+    cmd = 'bd! ' .. name
+    vim.cmd(cmd)
   end)
 end)
 
