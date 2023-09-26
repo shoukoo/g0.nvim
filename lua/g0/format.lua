@@ -1,7 +1,7 @@
 local M = {}
 local api = vim.api
-local fn= vim.fn
-local utils = require"g0.utils"
+local fn = vim.fn
+local utils = require "g0.utils"
 
 M.goimports = function()
   require('g0.install').install("goimports")
@@ -28,12 +28,16 @@ M.goimports = function()
         return vim.notify('goimports failed ' .. vim.inspect(data), vim.log.levels.ERROR)
       end
     end,
-    on_exit = function(_, exit_code)
-      print("end".. exit_code)
+    on_exit = function(_, data, _)
+      if data ~= 0 then
+        return vim.notify('goimports failed ' .. tostring(data), vim.log.levels.ERROR)
+      end
     end,
     stdout_buffered = true,
     stderr_buffered = true,
   })
+
+  fn.jobwait({job_id})
 
   if job_id <= 0 then
     vim.notify("Error: unable to start goimports")
