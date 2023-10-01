@@ -7,6 +7,9 @@ M.test_current_dir = function()
 
   local buf = api.nvim_create_buf(false, true) -- Create a new buffer
 
+  local buffer_name = fn.bufname('%') -- Get the full path of the current buffer
+  local current_directory = fn.fnamemodify(buffer_name, ':h') -- Get the directory part
+
   local width = math.floor(o.columns * 0.5) -- 50% of the current window width
   local height = math.floor(o.lines * 0.5)
   local row = math.floor((o.lines - height) / 2)
@@ -25,8 +28,6 @@ M.test_current_dir = function()
     title = "press q to quit",
   })
 
-  -- Run the "go test ./..." command in the specified directory
-  local current_directory = fn.expand('%:p:h')
   local command = "cd " .. current_directory .. " && go test ./..."
   print(command)
 
