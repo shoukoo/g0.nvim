@@ -60,35 +60,5 @@ M.test_current = function()
     end
 end
 
-function extract_golang_function_at_cursor()
-  local ts = vim.treesitter.get_parser()
-  ts:parse()
-  local root = ts:parse()[1]:root()
-
-  -- Get the current cursor position (row and column)
-  local cursor_row, cursor_col= unpack(vim.api.nvim_win_get_cursor(0))
-  -- local cursor_row = vim.fn.line('.')
-  -- local cursor_col = vim.fn.col('.')
-
-  -- Define the Tree-sitter query for Golang function names at the cursor position
-  local query = string.format([[
-        (function_declaration
-            (identifier) @function_name
-            (function_parameters)
-            (function_body)
-        ) @function_parent
-    ]], cursor_row, cursor_col)
-
-  -- Execute the query and extract function names
-  local function_names = {}
-  for capture in root:iter_captures(query) do
-    local start_row, _, end_row, _ = capture.function_parent:range()
-    if start_row <= cursor_row and cursor_row <= end_row then
-      table.insert(function_names, capture.function_name)
-    end
-  end
-
-  return function_names
-end
 
 return M
