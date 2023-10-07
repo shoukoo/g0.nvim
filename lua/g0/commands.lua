@@ -10,6 +10,10 @@ M.add_cmds = function()
     require('g0.test').test_current_dir()
   end)
 
+  create_cmd('G0TestCurrent', function(_)
+    require('g0.test').test_current()
+  end)
+
   create_cmd('G0Install', function(opts)
     require('g0.install').install(unpack(opts.fargs))
   end, { nargs = '*' })
