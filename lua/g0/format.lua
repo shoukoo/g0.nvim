@@ -37,10 +37,10 @@ M.goimports = function()
     stderr_buffered = true,
   })
 
-  fn.jobwait({job_id})
+  local result = fn.jobwait({ job_id })
 
-  if job_id <= 0 then
-    vim.notify("Error: unable to start goimports")
+  if result < 0 then
+    vim.notify("Error: goimports failed", vim.log.levels.ERROR)
   end
 
 end
