@@ -39,7 +39,8 @@ M.goimports = function()
 
   local result = fn.jobwait({ job_id })
 
-  if result < 0 then
+  -- only ran 1 cmd thus getting first index of the result
+  if result[1] < 0 then
     vim.notify("Error: goimports failed", vim.log.levels.ERROR)
   end
 
