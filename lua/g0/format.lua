@@ -37,11 +37,14 @@ M.goimports = function()
     stderr_buffered = true,
   })
 
-  local result = fn.jobwait({ job_id })
+  -- timeout in 1 second
+  local result = fn.jobwait({ job_id }, 1000)
 
-  -- only ran 1 cmd thus getting first index of the result
-  if result[1] < 0 then
-    vim.notify("Error: goimports failed", vim.log.levels.ERROR)
+  -- only ran 1 cmd thus getting result from the first index
+  if result[1] == -1 then
+    vim.notify("Error: goimports timeout", vim.log.levels.ERROR)
+  elseif result[1] < 0 then
+    vim.notify("Error: goimports failed ".. result[1], vim.log.levels.ERROR)
   end
 
 end
