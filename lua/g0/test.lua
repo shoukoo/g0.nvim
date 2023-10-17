@@ -34,7 +34,7 @@ M.test_current_dir = function()
   vim.cmd("term " .. command)
   api.nvim_win_set_cursor(win_id, { fn.line('$'), 0 })
 
-  -- Example: Close the floating window when pressing 'q'
+  -- Close the floating window when pressing 'q'
   api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
     noremap = true,
     silent = true,
@@ -54,7 +54,7 @@ M.test_current = function()
 
     if node then
         local function_name = vim.treesitter.get_node_text(node:child(1), 0)
-        print("Function Name:", function_name)
+        vim.notify(function_name, vim.log.levels.INFO)
     else
         print("Not inside a function")
     end
