@@ -44,20 +44,23 @@ end
 
 M.test_current = function()
 
-    -- Query Tree-sitter for the current function node
-    local node = vim.treesitter.get_node()
+  -- Query Tree-sitter for the current function node
+  local node = vim.treesitter.get_node()
 
-    -- Traverse up the tree until we find the function node
-    while node and node:type() ~= 'function_declaration' do
-        node = node:parent()
-    end
+  -- Traverse up the tree until we find the function node
+  while node and node:type() ~= 'function_declaration' do
+    node = node:parent()
+  end
 
-    if node then
-        local function_name = vim.treesitter.get_node_text(node:child(1), 0)
-        vim.notify(function_name, vim.log.levels.INFO)
-    else
-        print("Not inside a function")
-    end
+  if node then
+    local buffer_name = fn.bufname('%') -- Get the full path of the current buffer
+    local current_directory = fn.fnamemodify(buffer_name, ':h') -- Get the directory part
+    local function_name = vim.treesitter.get_node_text(node:child(1), 0)
+    local command = "cd " .. current_directory .. " && go test -u " .. function_name
+    vim.notify(command, vim.log.levels.INFO)
+  else
+    print("Not inside a function")
+  end
 end
 
 
