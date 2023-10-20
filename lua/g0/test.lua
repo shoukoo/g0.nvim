@@ -88,7 +88,7 @@ M.test_current = function()
     })
 
   else
-    print("Not inside a function")
+    vim.notify("Error: not inside a function", vim.log.levels.ERROR)
   end
 end
 

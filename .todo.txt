@@ -1,5 +1,5 @@
-- Creat func to test single func
 - Add test for G0TestCurrentDir
+  - Make sure the file has "_test.go" prefix, otherwise fail
 - Add test for G0TestCurrent
 - add G0TestFunc to test the function 
 - add function for GoAddTags

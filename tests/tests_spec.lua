@@ -198,48 +198,46 @@ describe("g0.commands", function()
     assert.equal(vim.fn.exists(':G0InstallAll'), 2)
     assert.equal(vim.fn.exists(':G0UpdateAll'), 2)
     assert.equal(vim.fn.exists(':G0TestCurrentDir'), 2)
+    assert.equal(vim.fn.exists(':G0TestCurrent'), 2)
   end)
 end)
 
 describe("g0.test", function()
-  it("TestCurrent tests func TestAdd", function()
+  local tempFolderPath
+
+  before_each(function()
     local sourceFolder = cur_dir .. '/tests/testData/test/'
-    local tempFolderPath = vim.fn.tempname()
-    local result = os.remove(tempFolderPath)
-    local result2 = vim.fn.mkdir(tempFolderPath, "p")
+    tempFolderPath = utils.mktemp()
 
-    local moveCommand = "cp -r " .. sourceFolder .. " " .. tempFolderPath
+    local moveCommand = "cp -r " .. sourceFolder .. "/*" .. " " .. tempFolderPath
     local success = os.execute(moveCommand)
-
-    if success == 0 then
-      print("Folder moved to temporary folder.")
-    else
-      print("Error: Failed to move folder.")
+    if not success then
+      error("Error: Failed to move folder.")
     end
-    --    -- Construct the shell command to move the folder and its contents
-    --     local moveCommand = "mv " .. sourceFolder .. " " .. tempFolderPath
-    --
-    --     -- Use os.execute to execute the move command
-    --     local success = os.execute(moveCommand)
-    --
-    --     vim.fn.mkdir(tempFolderPath, "p")
-    --
-    --     local moveCommand = "mv " .. sourceFolder .. " " .. tempFolderPath
-    --     local success = os.execute(moveCommand)
-    --
-    --     if success == 0 then
-    --         print("Folder moved to temporary folder.")
-    --     else
-    --         print("Error: Failed to move folder.")
-    --     end
-    local file = cur_dir .. "/tests/testData/test/test_test.go"
+
+    local file = tempFolderPath .. "/test_test.go"
     local cmd = " silent exe 'e " .. file .. "'"
     vim.cmd(cmd)
+  end)
+
+  it("TestCurrent - tests func TestAdd", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
+    -- spy the vim cmd and then inspect the output
     spy.on(vim, "cmd")
     require("g0.test").test_current()
     assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with(match.has_match('*'))
+    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd")
+  end)
+
+  it("TestCurrent - error not inside a function", function()
+    vim.fn.setpos(".", { 0, 12, 0, 0 })
+
+    -- spy the vim cmd and then inspect the output
+    spy.on(vim, "cmd")
+    spy.on(vim, "notify")
+    require("g0.test").test_current()
+    assert.spy(vim.cmd).was_called(0)
+    assert.spy(vim.notify).was_called_with("Error: not inside a function", vim.log.levels.ERROR)
   end)
 end)

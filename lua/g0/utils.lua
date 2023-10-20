@@ -60,24 +60,13 @@ M.is_go_test = function(buf)
   return string.find(filename, "_test%.go") ~= nil
 end
 
-M.load_plugin = function(name, modulename)
-  modulename = modulename or name
-  local has, plugin = pcall(require, modulename)
-  if has then
-    return plugin
+M.mktemp = function()
+  local tempFolderPath = vim.fn.tempname()
+  local result = vim.fn.mkdir(tempFolderPath, "p")
+  if not result then
+    error("unable to create a temp dir")
   end
-
-  local has_lazy = pcall(require, 'lazy')
-  if has_lazy then
-    require('lazy').load({ plugins = modulename })
-  end
-
-  has, plugin = pcall(require, modulename)
-  if not has then
-    util.info('plugin ' .. name .. ' module ' .. modulename .. '  not loaded ')
-    return nil
-  end
-  return plugin
+  return tempFolderPath
 end
 
 
