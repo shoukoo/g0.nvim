@@ -2,6 +2,8 @@ local mock = require 'luassert.mock'
 local spy = require "luassert.spy"
 local match = require 'luassert.match'
 local stub = require "luassert.stub"
+local cur_dir = vim.fn.expand('%:p:h')
+local utils = require "g0.utils"
 
 describe("g0.utils", function()
 
@@ -196,5 +198,48 @@ describe("g0.commands", function()
     assert.equal(vim.fn.exists(':G0InstallAll'), 2)
     assert.equal(vim.fn.exists(':G0UpdateAll'), 2)
     assert.equal(vim.fn.exists(':G0TestCurrentDir'), 2)
+  end)
+end)
+
+describe("g0.test", function()
+  it("TestCurrent tests func TestAdd", function()
+    local sourceFolder = cur_dir .. '/tests/testData/test/'
+    local tempFolderPath = vim.fn.tempname()
+    local result = os.remove(tempFolderPath)
+    local result2 = vim.fn.mkdir(tempFolderPath, "p")
+
+    local moveCommand = "cp -r " .. sourceFolder .. " " .. tempFolderPath
+    local success = os.execute(moveCommand)
+
+    if success == 0 then
+      print("Folder moved to temporary folder.")
+    else
+      print("Error: Failed to move folder.")
+    end
+    --    -- Construct the shell command to move the folder and its contents
+    --     local moveCommand = "mv " .. sourceFolder .. " " .. tempFolderPath
+    --
+    --     -- Use os.execute to execute the move command
+    --     local success = os.execute(moveCommand)
+    --
+    --     vim.fn.mkdir(tempFolderPath, "p")
+    --
+    --     local moveCommand = "mv " .. sourceFolder .. " " .. tempFolderPath
+    --     local success = os.execute(moveCommand)
+    --
+    --     if success == 0 then
+    --         print("Folder moved to temporary folder.")
+    --     else
+    --         print("Error: Failed to move folder.")
+    --     end
+    local file = cur_dir .. "/tests/testData/test/test_test.go"
+    local cmd = " silent exe 'e " .. file .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos(".", { 0, 6, 5, 0 })
+
+    spy.on(vim, "cmd")
+    require("g0.test").test_current()
+    assert.spy(vim.cmd).was_called(1)
+    assert.spy(vim.cmd).was_called_with(match.has_match('*'))
   end)
 end)

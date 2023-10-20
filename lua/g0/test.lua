@@ -61,8 +61,8 @@ M.test_current = function()
 
 
     local buf = api.nvim_create_buf(false, true) -- Create a new buffer
-    local width = math.floor(o.columns * 0.5) -- 50% of the current window width
-    local height = math.floor(o.lines * 0.5)
+    local width = math.floor(o.columns * 0.8) -- 50% of the current window width
+    local height = math.floor(o.lines * 0.8)
     local row = math.floor((o.lines - height) / 2)
     local col = math.floor((o.columns - width) / 2)
     -- Create the floating window
@@ -78,7 +78,6 @@ M.test_current = function()
       title = "press q to quit",
     })
 
-
     vim.cmd("term " .. command)
     api.nvim_win_set_cursor(win_id, { fn.line('$'), 0 })
 
@@ -87,6 +86,7 @@ M.test_current = function()
       noremap = true,
       silent = true,
     })
+
   else
     print("Not inside a function")
   end

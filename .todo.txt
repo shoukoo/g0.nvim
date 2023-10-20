@@ -1,0 +1,5 @@
+- Creat func to test single func
+- Add test for G0TestCurrentDir
+- Add test for G0TestCurrent
+- add G0TestFunc to test the function 
+- add function for GoAddTags
