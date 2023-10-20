@@ -47,18 +47,6 @@ M.handle_job_data = function(data)
   return data
 end
 
-M.compare_content = function(tbl1, tbl2)
-  if #tbl1 ~= #tbl2 then
-    return false
-  end
-  for k, v in ipairs(tbl1) do
-    if v ~= tbl2[k] then
-      return false
-    end
-  end
-  return true
-end
-
 M.remove_ansi_escape = function(str)
   local ansi_escape_pattern = '\27%[%d+;%d*;%d*m'
   -- Replace all occurrences of the pattern with an empty string
