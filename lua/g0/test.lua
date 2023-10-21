@@ -1,22 +1,19 @@
 local M = {}
-local api = vim.api
-local o = vim.o
-local fn = vim.fn
 
 M.test_current_dir = function()
 
-  local buf = api.nvim_create_buf(false, true) -- Create a new buffer
+  local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
 
-  local buffer_name = fn.bufname('%') -- Get the full path of the current buffer
-  local current_directory = fn.fnamemodify(buffer_name, ':h') -- Get the directory part
+  local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
+  local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
 
-  local width = math.floor(o.columns * 0.5) -- 50% of the current window width
-  local height = math.floor(o.lines * 0.5)
-  local row = math.floor((o.lines - height) / 2)
-  local col = math.floor((o.columns - width) / 2)
+  local width = math.floor(vim.o.columns * 0.5) -- 50% of the current window width
+  local height = math.floor(vim.o.lines * 0.5)
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
 
   -- Create the floating window
-  local win_id = api.nvim_open_win(buf, true, {
+  local win_id = vim.api.nvim_open_win(buf, true, {
     relative = 'editor',
     width = width,
     height = height,
@@ -31,10 +28,10 @@ M.test_current_dir = function()
   local command = "cd " .. current_directory .. " && go test ./..."
 
   vim.cmd("term " .. command)
-  api.nvim_win_set_cursor(win_id, { fn.line('$'), 0 })
+  vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
 
   -- Close the floating window when pressing 'q'
-  api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
     noremap = true,
     silent = true,
   })
@@ -53,7 +50,7 @@ M.test_current = function()
 
 
   if node then
-    local buffer_name = fn.bufname('%') -- Get the full path of the current buffer
+    local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
 
     -- Chech if the file name has "_test.go"
     if not string.find(buffer_name, "_test.go$") then
@@ -61,17 +58,17 @@ M.test_current = function()
       return
     end
 
-    local current_directory = fn.fnamemodify(buffer_name, ':h') -- Get the directory part
+    local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
     local function_name = vim.treesitter.get_node_text(node:child(1), 0)
     local command = "cd " .. current_directory .. " && go test -run " .. function_name
 
-    local buf = api.nvim_create_buf(false, true) -- Create a new buffer
-    local width = math.floor(o.columns * 0.8) -- 50% of the current window width
-    local height = math.floor(o.lines * 0.8)
-    local row = math.floor((o.lines - height) / 2)
-    local col = math.floor((o.columns - width) / 2)
+    local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
+    local width = math.floor(vim.o.columns * 0.8) -- 50% of the current window width
+    local height = math.floor(vim.o.lines * 0.8)
+    local row = math.floor((vim.o.lines - height) / 2)
+    local col = math.floor((vim.o.columns - width) / 2)
     -- Create the floating window
-    local win_id = api.nvim_open_win(buf, true, {
+    local win_id = vim.api.nvim_open_win(buf, true, {
       relative = 'editor',
       width = width,
       height = height,
@@ -84,10 +81,10 @@ M.test_current = function()
     })
 
     vim.cmd("term " .. command)
-    api.nvim_win_set_cursor(win_id, { fn.line('$'), 0 })
+    vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
 
     -- Close the floating window when pressing 'q'
-    api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
+    vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
       noremap = true,
       silent = true,
     })

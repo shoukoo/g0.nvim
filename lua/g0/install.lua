@@ -1,4 +1,3 @@
-local uv = vim.loop
 local utils = require("g0.utils")
 
 local M = {}
@@ -31,7 +30,7 @@ M.is_installed = function(pkg)
   local base_paths = M.get_path_env()
 
   for _, value in pairs(base_paths) do
-    if uv.fs_stat(value .. join_path .. pkg .. extension) then
+    if vim.loop.fs_stat(value .. join_path .. pkg .. extension) then
       return true
     end
   end
