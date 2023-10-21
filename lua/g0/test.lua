@@ -29,7 +29,6 @@ M.test_current_dir = function()
   })
 
   local command = "cd " .. current_directory .. " && go test ./..."
-  print(command)
 
   vim.cmd("term " .. command)
   api.nvim_win_set_cursor(win_id, { fn.line('$'), 0 })

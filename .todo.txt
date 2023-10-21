@@ -1,5 +1,3 @@
-- Add test for G0TestCurrentDir
-  - Make sure the file has "_test.go" prefix, otherwise fail
-- Add test for G0TestCurrent
-- add G0TestFunc to test the function 
+- Make the float window reusable
 - add function for GoAddTags
+- add Doc

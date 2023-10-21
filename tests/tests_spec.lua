@@ -253,4 +253,14 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called(0)
     assert.spy(vim.notify).was_called_with("This is not a Go test file", vim.log.levels.ERROR)
   end)
+  it("TestCurrentDir - tested successfully", function()
+    local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
+    vim.cmd(cmd)
+
+    -- spy the vim cmd and then inspect the output
+    spy.on(vim, "cmd")
+    require("g0.test").test_current_dir()
+    assert.spy(vim.cmd).was_called(1)
+    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./...")
+  end)
 end)
