@@ -1,17 +1,10 @@
 local M = {}
 
-M.test_current_dir = function()
-
-  local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
-
-  local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
-  local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
-
-  local width = math.floor(vim.o.columns * 0.5) -- 50% of the current window width
-  local height = math.floor(vim.o.lines * 0.5)
+local float_win = function(buf)
+  local width = math.floor(vim.o.columns * 0.8) -- 50% of the current window width
+  local height = math.floor(vim.o.lines * 0.8)
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
-
   -- Create the floating window
   local win_id = vim.api.nvim_open_win(buf, true, {
     relative = 'editor',
@@ -24,7 +17,17 @@ M.test_current_dir = function()
     border = "single",
     title = "press q to quit",
   })
+  return win_id
+end
 
+M.test_current_dir = function()
+
+  local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
+
+  local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
+  local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
+
+  local win_id = float_win(buf)
   local command = "cd " .. current_directory .. " && go test ./..."
 
   vim.cmd("term " .. command)
@@ -63,22 +66,7 @@ M.test_current = function()
     local command = "cd " .. current_directory .. " && go test -run " .. function_name
 
     local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
-    local width = math.floor(vim.o.columns * 0.8) -- 50% of the current window width
-    local height = math.floor(vim.o.lines * 0.8)
-    local row = math.floor((vim.o.lines - height) / 2)
-    local col = math.floor((vim.o.columns - width) / 2)
-    -- Create the floating window
-    local win_id = vim.api.nvim_open_win(buf, true, {
-      relative = 'editor',
-      width = width,
-      height = height,
-      col = col,
-      row = row,
-      style = 'minimal',
-      zindex = 250,
-      border = "single",
-      title = "press q to quit",
-    })
+    local win_id = float_win(buf)
 
     vim.cmd("term " .. command)
     vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
@@ -93,6 +81,5 @@ M.test_current = function()
     vim.notify("Not inside a function", vim.log.levels.ERROR)
   end
 end
-
 
 return M
