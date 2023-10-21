@@ -1,7 +1,6 @@
 local mock = require 'luassert.mock'
 local spy = require "luassert.spy"
 local match = require 'luassert.match'
-local stub = require "luassert.stub"
 local cur_dir = vim.fn.expand('%:p:h')
 local utils = require "g0.utils"
 
@@ -238,6 +237,20 @@ describe("g0.test", function()
     spy.on(vim, "notify")
     require("g0.test").test_current()
     assert.spy(vim.cmd).was_called(0)
-    assert.spy(vim.notify).was_called_with("Error: not inside a function", vim.log.levels.ERROR)
+    assert.spy(vim.notify).was_called_with("Not inside a function", vim.log.levels.ERROR)
+  end)
+
+  it("TestCurrent - this is not a Go test file", function()
+    local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
+    vim.cmd(cmd)
+
+    vim.fn.setpos(".", { 0, 6, 0, 0 })
+
+    -- spy the vim cmd and then inspect the output
+    spy.on(vim, "cmd")
+    spy.on(vim, "notify")
+    require("g0.test").test_current()
+    assert.spy(vim.cmd).was_called(0)
+    assert.spy(vim.notify).was_called_with("This is not a Go test file", vim.log.levels.ERROR)
   end)
 end)

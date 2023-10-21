@@ -55,10 +55,16 @@ M.test_current = function()
 
   if node then
     local buffer_name = fn.bufname('%') -- Get the full path of the current buffer
+
+    -- Chech if the file name has "_test.go"
+    if not string.find(buffer_name, "_test.go$") then
+      vim.notify("This is not a Go test file", vim.log.levels.ERROR)
+      return
+    end
+
     local current_directory = fn.fnamemodify(buffer_name, ':h') -- Get the directory part
     local function_name = vim.treesitter.get_node_text(node:child(1), 0)
     local command = "cd " .. current_directory .. " && go test -run " .. function_name
-
 
     local buf = api.nvim_create_buf(false, true) -- Create a new buffer
     local width = math.floor(o.columns * 0.8) -- 50% of the current window width
@@ -88,7 +94,7 @@ M.test_current = function()
     })
 
   else
-    vim.notify("Error: not inside a function", vim.log.levels.ERROR)
+    vim.notify("Not inside a function", vim.log.levels.ERROR)
   end
 end
 
