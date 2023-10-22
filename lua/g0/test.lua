@@ -1,6 +1,6 @@
 local M = {}
 
-local float_win = function(buf)
+local float_win = function(buf, cmd)
   local width = math.floor(vim.o.columns * 0.8) -- 50% of the current window width
   local height = math.floor(vim.o.lines * 0.8)
   local row = math.floor((vim.o.lines - height) / 2)
@@ -15,20 +15,36 @@ local float_win = function(buf)
     style = 'minimal',
     zindex = 250,
     border = "single",
-    title = "press q to quit",
+    title = "press q to quit | cmd: " .. cmd,
   })
   return win_id
 end
 
-M.test_current_dir = function()
+local set_args = function(...)
+  local args = ... or {}
+  local options = {}
+  for _, value in ipairs(args) do
+    if value == "-v" then
+      options["verbose"] = true
+    end
+  end
+  return options
+end
 
+M.test_current_dir = function(...)
+
+  local options = set_args(...)
   local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
 
   local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
   local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
 
-  local win_id = float_win(buf)
   local command = "cd " .. current_directory .. " && go test ./..."
+  if options["verbose"] then
+    command = command .. " -v"
+  end
+  
+  local win_id = float_win(buf, command)
 
   vim.cmd("term " .. command)
   vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
@@ -41,7 +57,10 @@ M.test_current_dir = function()
 
 end
 
-M.test_current = function()
+-- test_current only read the "-v" argument
+M.test_current = function(...)
+
+  local options = set_args(...)
 
   -- Query Tree-sitter for the current function node
   local node = vim.treesitter.get_node()
@@ -64,9 +83,12 @@ M.test_current = function()
     local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
     local function_name = vim.treesitter.get_node_text(node:child(1), 0)
     local command = "cd " .. current_directory .. " && go test -run " .. function_name
+    if options["verbose"] then
+      command = command .. " -v"
+    end
 
     local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
-    local win_id = float_win(buf)
+    local win_id = float_win(buf, command)
 
     vim.cmd("term " .. command)
     vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })

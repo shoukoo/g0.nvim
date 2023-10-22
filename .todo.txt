@@ -1,3 +1,2 @@
-- Make the float window reusable
 - add function for GoAddTags
 - add Doc
