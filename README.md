@@ -7,18 +7,18 @@ Neovim plugin for Golang
 ```lua
   { 'shoukoo/g0.nvim' }
 ```
-# Commands
+## Commands
 
-## :G0Imports
+### :G0Imports
 
-## :G0Install {pkg name}
+### :G0Install {pkg name}
 
-## :G0InstallAll
+### :G0InstallAll
 
-## :G0UpdateAll
+### :G0UpdateAll
 
-## :G0TestCurrent {-v}
+### :G0TestCurrent {-v}
 
-## :G0TestCurrentDir {-v}
+### :G0TestCurrentDir {-v}
 
 
