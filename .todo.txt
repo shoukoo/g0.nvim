@@ -6,4 +6,4 @@
 - Add default config in neovim 
   - https://github.com/folke/neodev.nvim/blob/main/lua/neodev/config.lua
 - add Doc
-  - https://github.com/kdheepak/panvimdoc generates vimdoc from markdown
+  - update doc with example

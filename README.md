@@ -3,7 +3,7 @@ Neovim plugin for Golang
 
 ## Installation
 
-### Lazy
+### Lazy.nvim
 ```lua
   { 'shoukoo/g0.nvim' }
 ```
