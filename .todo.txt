@@ -1,9 +1,9 @@
 - add function for GoAddTags
-- Add Ci
-  - auto gen vimdoc 
-  - create release
-- Key mapping should be able to created within the lazy config
 - Add default config in neovim 
   - https://github.com/folke/neodev.nvim/blob/main/lua/neodev/config.lua
 - add Doc
   - update doc with example
+- Add Ci
+  - create release
+
+
