@@ -33,17 +33,17 @@ end
 
 M.test_current_dir = function(...)
 
-  local options = set_args(...)
+  local args = ...
   local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
 
   local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
   local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
 
   local command = "cd " .. current_directory .. " && go test ./..."
-  if options["verbose"] then
-    command = command .. " -v"
+  if args then
+    command = command .. " " .. table.concat(args, " ")
   end
-  
+
   local win_id = float_win(buf, command)
 
   vim.cmd("term " .. command)
@@ -60,7 +60,7 @@ end
 -- test_current only read the "-v" argument
 M.test_current = function(...)
 
-  local options = set_args(...)
+  local args = ...
 
   -- Query Tree-sitter for the current function node
   local node = vim.treesitter.get_node()
@@ -83,8 +83,8 @@ M.test_current = function(...)
     local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
     local function_name = vim.treesitter.get_node_text(node:child(1), 0)
     local command = "cd " .. current_directory .. " && go test -run " .. function_name
-    if options["verbose"] then
-      command = command .. " -v"
+    if args then
+      command = command .. " " .. table.concat(args, " ")
     end
 
     local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
