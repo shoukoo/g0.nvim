@@ -29,10 +29,30 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 ```
 
 ### :G0Install {pkg}
+These are the available packages that can be installed using the command. To add a new package, you can add it in the lua/g0/install.lua, or manually install it
 
+| Pkg          | Repository URL                            |
+|--------------- | ----------------------------------------- |
+| goimports     | golang.org/x/tools/cmd/goimports         |
+| gomodifytags  | github.com/fatih/gomodifytags             |
+| gopls         | golang.org/x/tools/gopls                 |
+
+To install the goimports pkg
+
+```lua
+:G0Install goimports
+```
+
+To install the gopls pkg
+
+```lua
+:G0Install gopls 
+```
 ### :G0InstallAll
+Install all the available packages
 
 ### :G0UpdateAll
+Update all the available packages
 
 ### :G0TestCurrent {args}
 Running :G0TestCurrent executes the `cd {file dir} && go test -run <func name>` command in the directory of the current file. You can also provide additional valid flags as needed, which are documented in go help test.
