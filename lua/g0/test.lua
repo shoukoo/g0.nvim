@@ -104,4 +104,59 @@ M.test_current = function(...)
   end
 end
 
+M.popup = function(helpfulText, width, height)
+    -- Create a new buffer for the popup window
+    local buf = vim.api.nvim_create_buf(false, true)
+
+    -- Calculate dimensions if not provided
+    if not width then
+        width = 40
+    end
+    if not height then
+        height = 1
+    end
+
+    -- Set buffer options to allow text input
+    vim.api.nvim_buf_set_option(buf, 'modifiable', true)
+    vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+
+    -- Set the content in the buffer with centered helpful text
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, {"go test ./..."})
+
+
+    -- Calculate the position to center the window
+    local row = math.floor((vim.o.lines - height) / 2)
+    local col = math.floor((vim.o.columns - width) / 2)
+
+    -- Create the popup window
+    local win_id = vim.api.nvim_open_win(buf, true, {
+        relative = 'editor',
+        width = width,
+        height = height,
+        row = row,
+        col = col,
+        style = 'minimal',
+        border = 'single',
+        title = helpfulText
+    })
+
+    -- Enter insert mode in the popup window
+    vim.api.nvim_set_current_win(win_id)
+    vim.api.nvim_feedkeys('i', 'n', true)
+
+    -- Handle keypress events in the popup
+    vim.api.nvim_buf_set_keymap(buf, 'i', '<CR>', '<Esc>:lua handle_popup_input()<CR>',{})
+    vim.api.nvim_buf_set_keymap(buf, 'i', '<Esc>', '<Esc>:q!<CR>', { noremap = true, silent = true })
+
+
+    -- Function to handle Enter keypress in the popup
+    function handle_popup_input()
+        local text = vim.fn.getline(1, '$')
+        print(text)
+        -- You can process the entered text here
+        -- For example, close the popup window or perform actions with the input
+        vim.api.nvim_win_close(win_id, true)
+    end
+end
+
 return M
