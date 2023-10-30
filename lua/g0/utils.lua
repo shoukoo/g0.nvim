@@ -69,5 +69,13 @@ M.mktemp = function()
   return tempFolderPath
 end
 
+M.get_last_usr_cmd = function()
+  local history_index = vim.fn.histnr("cmd") -- Get the index of the last command
+  if history_index > 0 then
+    local last_command = vim.fn.histget("cmd", history_index) -- Retrieve the last command
+    return last_command
+  end
+  return nil
+end
 
 return M
