@@ -63,7 +63,7 @@ The following run the go test with the verbose flag
 :G0TestCurrent -v
 ```
 
-The following run the go test 
+The following run the go test with the integration tag
 
 ```lua
 :G0TestCurrent --tag=integration
@@ -78,7 +78,7 @@ The following run the go test with the verbose flag
 :G0TestCurrentDir -v
 ```
 
-The following run the go test 
+The following run the go test with the integration tag
 
 ```lua
 :G0TestCurrentDir --tag=integration
