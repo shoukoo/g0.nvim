@@ -1,0 +1,71 @@
+package modifytags
+
+import (
+	"errors"
+	"fmt"
+	"time"
+)
+
+var ErrNotOnAnyBranch = errors.New("git: not on any branch")
+
+type NotInstalled struct {
+	message string
+	err     error
+}
+
+type PullRequest struct {
+	ID                  string
+	Number              int
+	Title               string
+	State               string
+	Closed              bool
+	URL                 string `json:"url"`
+	BaseRefName         string `json:"base_ref_name"`
+	HeadRefName         string `json:"head_ref_name"`
+	HeadRefOid          string `json:"head_ref_oid"`
+	Body                string `json:"body"`
+	Mergeable           string `json:"mergeable"`
+	Additions           int    `json:"additions"`
+	Deletions           int    `json:"deletions"`
+	ChangedFiles        int    `json:"changed_files"`
+	MergeStateStatus    string `json:"merge_state_status"`
+	IsInMergeQueue      bool   `json:"is_in_merge_queue"`
+	IsMergeQueueEnabled bool
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	ClosedAt            *time.Time
+	MergedAt            *time.Time
+
+	Files struct {
+		Nodes     []string
+		CreatedAt time.Time
+		UpdatedAt time.Time
+		ClosedAt  *time.Time
+		MergedAt  *time.Time
+	}
+}
+
+func (e *NotInstalled) Error() string {
+	return e.message
+}
+
+func (e *NotInstalled) Unwrap() error {
+	return e.err
+}
+
+type GitError struct {
+	ExitCode int
+	Stderr   string
+	err      error
+}
+
+func (ge *GitError) Error() string {
+	if ge.Stderr == "" {
+		return fmt.Sprintf("failed to run git: %v", ge.err)
+	}
+	return fmt.Sprintf("failed to run git: %s", ge.Stderr)
+}
+
+func (ge *GitError) Unwrap() error {
+	return ge.err
+}

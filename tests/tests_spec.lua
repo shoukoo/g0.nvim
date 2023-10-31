@@ -234,7 +234,7 @@ describe("g0.test", function()
 
     -- spy the vim cmd and then inspect the output
     spy.on(vim, "cmd")
-    require("g0.test").test_current({"-v"})
+    require("g0.test").test_current({ "-v" })
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd -v")
   end)
@@ -281,8 +281,45 @@ describe("g0.test", function()
 
     -- spy the vim cmd and then inspect the output
     spy.on(vim, "cmd")
-    require("g0.test").test_current_dir({"-v"})
+    require("g0.test").test_current_dir({ "-v" })
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./... -v")
+  end)
+
+
+  describe("g0.modifytags", function()
+    it("G0AddTags - succeed, in visual mode", function()
+
+      -- read the golden file to get the expected result
+      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. '/tests/testData/modifytags/modifytags_golden.go'), '\n')
+
+      -- get the unimported go code and write it to a temporary file
+      local testFile = cur_dir .. '/tests/testData/modifytags/modifytags.go'
+      local lines = vim.fn.readfile(testFile)
+      local name = vim.fn.tempname() .. '.go'
+      vim.fn.writefile(lines, name)
+
+      -- edit the temporary file and call goimports func
+      local cmd = " silent exe 'e " .. name .. "'"
+      vim.cmd(cmd)
+      vim.fn.setpos("'<", { 0, 22, 0, 0 })
+      vim.fn.setpos("'>", { 0, 32, 0, 0 })
+
+
+      local customCommand = "G0AddTags"
+      vim.fn.histadd("cmd", "'<,'>G0AddTags")
+      vim.api.nvim_command("execute '" .. customCommand .. "'")
+
+      -- wait 300 for the file to be formatted
+      vim.wait(300, function() end)
+
+      local buf = vim.api.nvim_get_current_buf()
+      local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+      assert.equal(expected, result)
+
+      -- delete the temp file
+      cmd = 'bd! ' .. name
+      vim.cmd(cmd)
+    end)
   end)
 end)

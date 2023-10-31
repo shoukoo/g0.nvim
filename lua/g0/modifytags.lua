@@ -8,27 +8,56 @@ local M = {}
 -- add json tag based on offset(bytes), this will transform the entire struct
 -- gomodifytags -file api/queries_pr.go -offset=520 -add-tags=json
 M.add_tags = function(...)
-  P(...)
-  local cmd = vim.fn.getcmdline()
-  print("hello")
-  print(cmd)
-  -- local current_mode = vim.fn.mode()
-  local current_mode = vim.fn.visualmode('v')
-  print(current_mode)
-  -- Get the start and end lines of the visual selection
-  local start_line = vim.fn.line("'<") -- Start line
-  local end_line = vim.fn.line("'>") -- End line
-  local current_line = vim.fn.line('.')
-  print(start_line)
-  print(end_line)
-  print(current_line)
+  require('g0.install').install("gomodifytags")
 
-  -- Iterate over the lines in the range and do something
-  -- for line = start_line, end_line do
-  --   -- Your logic here, using 'line' to access individual lines
-  --   -- For example, you can use vim.fn.getline(line) to get the content of the line
-  --   print("Line " .. line .. ": " .. vim.fn.getline(line))
-  -- end
+  local args = ... or ""
+
+  local last_command = utils.get_last_usr_cmd()
+  print(last_command)
+  local buf = vim.api.nvim_get_current_buf()
+  local filename = vim.api.nvim_buf_get_name(buf)
+  local cmd
+
+  -- read last user cmd to determine the vim mode
+  -- if the last cmd contains '<,'>, it was in visual mode
+  if string.match(last_command, '\'<,\'>') then
+    local start_line = vim.fn.line("'<") -- Start line
+    local end_line = vim.fn.line("'>") -- End line
+    cmd = string.format("gomodifytags -file %s -line=%s", filename, start_line..","..end_line)
+
+    if not string.match(args, '-add-tags') then
+      cmd = cmd .. " -add-tags=json"
+    end
+
+    cmd = cmd .. " " .. args
+  else
+    local current_line = vim.fn.line('.')
+    print(current_line)
+  end
+
+  local job_id = vim.fn.jobstart(cmd, {
+    on_stdout = function(_, data, _)
+      data = utils.handle_job_data(data)
+      if not data then
+        return
+      end
+      vim.api.nvim_buf_set_lines(0, 0, -1, false, data)
+    end,
+    on_stderr = function(_, data, _)
+      data = utils.handle_job_data(data)
+      if data then
+        return vim.notify('gomodifytags failed ' .. vim.inspect(data), vim.log.levels.ERROR)
+      end
+    end,
+  })
+
+  local result = vim.fn.jobwait({ job_id }, 1000)
+
+  if result[1] == -1 then
+    vim.notify("Error: gomodifytags timeout", vim.log.levels.ERROR)
+  elseif result[1] < 0 then
+    vim.notify("Error: gomodifytags failed ".. result[1], vim.log.levels.ERROR)
+  end
 end
 
 M.remove_tag = function()
