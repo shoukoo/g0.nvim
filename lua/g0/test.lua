@@ -20,17 +20,6 @@ local float_win = function(buf, cmd)
   return win_id
 end
 
-local set_args = function(...)
-  local args = ... or {}
-  local options = {}
-  for _, value in ipairs(args) do
-    if value == "-v" then
-      options["verbose"] = true
-    end
-  end
-  return options
-end
-
 M.test_current_dir = function(...)
 
   local args = ...
