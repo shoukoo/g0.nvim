@@ -291,15 +291,15 @@ describe("g0.test", function()
     it("G0AddTags - succeed, in visual mode", function()
 
       -- read the golden file to get the expected result
-      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. '/tests/testData/modifytags/modifytags_golden.go'), '\n')
+      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. '/tests/testData/modifytags/modifytags_golden_visual_mode.go'), '\n')
 
-      -- get the unimported go code and write it to a temporary file
+      -- get the clean go code and write it to a temporary file
       local testFile = cur_dir .. '/tests/testData/modifytags/modifytags.go'
       local lines = vim.fn.readfile(testFile)
       local name = vim.fn.tempname() .. '.go'
       vim.fn.writefile(lines, name)
 
-      -- edit the temporary file and call goimports func
+      -- edit the temporary file to highlight the code block
       local cmd = " silent exe 'e " .. name .. "'"
       vim.cmd(cmd)
       vim.fn.setpos("'<", { 0, 22, 0, 0 })
