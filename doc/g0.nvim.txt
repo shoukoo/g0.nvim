@@ -1,4 +1,4 @@
-*g0.nvim.txt*         For Neovim >= 0.8.0         Last change: 2023 October 31
+*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 01
 
 ==============================================================================
 Table of Contents                                  *g0.nvim-table-of-contents*
