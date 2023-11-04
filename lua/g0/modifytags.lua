@@ -35,28 +35,22 @@ M.add_tags = function(...)
     local node = vim.treesitter.get_node({ pos = { row, 1 } })
     print(node)
 
-    if node and node:type() == 'type_declaration' and node:child_count() >= 2 then
-      -- 0 based index
-      -- inspect child node - type_spec
-      local ts_node = node:child(1)
-      if ts_node and ts_node:child_count() >= 2 and ts_node:child(1):type() == "struct_type" then
-        local struct_name = vim.treesitter.get_node_text(ts_node:child(0), 0)
-        cmd = string.format("gomodifytags -file=%s -struct=%s", filename, struct_name)
+    if node then
+      if node:type() == 'type_declaration' and node:child_count() >= 2 then
+        -- 0 based index
+        -- inspect child node - type_spec
+        local ts_node = node:child(1)
+        if ts_node and ts_node:child_count() >= 2 and ts_node:child(1):type() == "struct_type" then
+          local struct_name = vim.treesitter.get_node_text(ts_node:child(0), 0)
+          cmd = string.format("gomodifytags -file=%s -struct=%s", filename, struct_name)
+        end
+      end
+
+      if node:type() == 'field_identifier' then
+        -- revert row back to normal line number
+        cmd = string.format("gomodifytags -file=%s -line=%s", filename, row + 1)
       end
     end
-    -- -- local cnode = vim.treesitter.get_node()
-    -- local cnode = tsutil.get_node_at_cursor()
-    -- -- node = tsutil.goto_node(node, true, true)
-    -- while node do
-    --   -- local crow, _, _, _ = node:range()
-    --   print("-------------- row " .. row .. " col " .. col )
-    --   -- print(crow .. " " .. row)
-    --   print("current node: " .. cnode:type())
-    --   print(node:type())
-    --   print(node:range())
-    --   -- node = node:next_named_sibling()
-    --   node = tsutil.get_next_node(node, false, false)
-    -- end
   end
 
   if not string.match(args, '-add-tags') then
