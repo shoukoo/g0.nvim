@@ -288,19 +288,29 @@ describe("g0.test", function()
 
 
   describe("g0.modifytags", function()
-    it("G0AddTags - succeed, in visual mode", function()
+    local tmpFile
 
-      -- read the golden file to get the expected result
-      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. '/tests/testData/modifytags/modifytags_golden_visual_mode.go'), '\n')
-
+    before_each(function()
       -- get the clean go code and write it to a temporary file
       local testFile = cur_dir .. '/tests/testData/modifytags/modifytags.go'
       local lines = vim.fn.readfile(testFile)
-      local name = vim.fn.tempname() .. '.go'
-      vim.fn.writefile(lines, name)
+      tmpFile = vim.fn.tempname() .. '.go'
+      vim.fn.writefile(lines, tmpFile)
+    end)
 
+    after_each(function()
+      -- delete the temp file
+      cmd = 'bd! ' .. tmpFile
+      vim.cmd(cmd)
+    end)
+
+    it("G0AddTags - succeed in visual mode", function()
+
+      local golden_file = '/tests/testData/modifytags/modifytags_golden_visual_mode.go'
+      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+      --
       -- edit the temporary file to highlight the code block
-      local cmd = " silent exe 'e " .. name .. "'"
+      local cmd = " silent exe 'e " .. tmpFile .. "'"
       vim.cmd(cmd)
       vim.fn.setpos("'<", { 0, 22, 0, 0 })
       vim.fn.setpos("'>", { 0, 32, 0, 0 })
@@ -317,9 +327,6 @@ describe("g0.test", function()
       local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
       assert.equal(expected, result)
 
-      -- delete the temp file
-      cmd = 'bd! ' .. name
-      vim.cmd(cmd)
     end)
   end)
 end)
