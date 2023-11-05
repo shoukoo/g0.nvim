@@ -31,9 +31,9 @@ M.add_tags = function(...)
     -- vim include the indentation when counting the column where treesitter doesn't
     local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
     row = row - 1
+
     -- get the first node from the row
     local node = vim.treesitter.get_node({ pos = { row, 1 } })
-    print(node)
 
     if node then
       if node:type() == 'type_declaration' and node:child_count() >= 2 then
@@ -51,6 +51,10 @@ M.add_tags = function(...)
         cmd = string.format("gomodifytags -file=%s -line=%s", filename, row + 1)
       end
     end
+  end
+
+  if vim.fn.getbufinfo('%')[1].changed == 1 then
+    vim.cmd('write')
   end
 
   if not string.match(args, '-add-tags') then
