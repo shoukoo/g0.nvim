@@ -328,7 +328,7 @@ describe("g0.test", function()
 
     end)
 
-    it("G0AddTags - succeed, added tags to struct", function()
+    it("G0AddTags - succeed, added tags to a struct", function()
 
       local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode_struct.go'
       local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
@@ -339,6 +339,29 @@ describe("g0.test", function()
 
 
       local customCommand = "G0AddTags -transform=camelcase"
+      vim.fn.histadd("cmd", customCommand)
+      vim.api.nvim_command("execute '" .. customCommand .. "'")
+
+      -- wait 300 for the file to be formatted
+      vim.wait(300, function() end)
+
+      local buf = vim.api.nvim_get_current_buf()
+      local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+      assert.equal(expected, result)
+
+    end)
+
+    it("G0AddTags - succeed, added tags to a field", function()
+
+      local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode.go'
+      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+      local cmd = " silent exe 'e " .. tmpFile .. "'"
+      vim.cmd(cmd)
+      vim.fn.setpos(".", { 0, 25, 0, 0 })
+
+
+      local customCommand = "G0AddTags -add-tags=xml"
       vim.fn.histadd("cmd", customCommand)
       vim.api.nvim_command("execute '" .. customCommand .. "'")
 
