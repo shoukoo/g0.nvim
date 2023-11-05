@@ -57,13 +57,13 @@ Update all the available packages
 ### :G0TestCurrent {args}
 Running :G0TestCurrent executes the `cd {file dir} && go test -run <func name>` command in the directory of the current file. You can also provide additional valid flags as needed, which are documented in go help test.
 
-The following run the go test with the verbose flag
+Run the go test with the verbose flag
 
 ```lua
 :G0TestCurrent -v
 ```
 
-The following run the go test with the integration tag
+Run the go test with the integration tag
 
 ```lua
 :G0TestCurrent --tag=integration
@@ -72,14 +72,41 @@ The following run the go test with the integration tag
 ### :G0TestCurrentDir {args}
 Running :G0TestCurrentDir executes the `cd {file dir} && go test ./...` command in the directory of the current file. You can also provide additional valid flags as needed, which are documented in go help test.
 
-The following run the go test with the verbose flag
+Run the go test with the verbose flag
 
 ```lua
 :G0TestCurrentDir -v
 ```
 
-The following run the go test with the integration tag
+Run the go test with the integration tag
 
 ```lua
 :G0TestCurrentDir --tag=integration
+```
+
+### :[range]G0AddTags {args}
+![](./gif/g0addtags.gif)
+Running plain :G0AddTags executes the `gomodifyfiles -file={file dir} -add-tags=json` command to the current file. You can also provide additional valid flags as needed, which are documented in the [gomodifytags](https://github.com/fatih/gomodifytags) repo. Please note that it utilises default values from gomodifytags; for instance, it defaults to using `snake_case` for the tags
+ 
+
+To add tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below. To add a tag to a specific field, move your cursor to that field run the same cmd.
+```lua
+:G0AddTags
+```
+
+Highlight the fields in visual mode, and then execute the following command to add tags to them.
+
+```lua
+:'<,'>G0AddTags
+```
+
+To add both xml and json tags, run the cmd below
+
+```lua
+:G0AddTags -add-tags=xml,json
+```
+To use camelCase for the tags, run the cmd below
+
+```lua
+:G0AddTags -transform=camelcase
 ```
