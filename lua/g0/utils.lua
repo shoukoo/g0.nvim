@@ -26,6 +26,12 @@ M.extension = function()
   return ''
 end
 
+M.write_file = function(file, contents)
+  local fd = assert(io.open(file, "w+"))
+  fd:write(contents)
+  fd:close()
+end
+
 M.handle_job_data = function(data)
   if not data then
     return nil
