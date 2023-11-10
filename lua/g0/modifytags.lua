@@ -2,8 +2,9 @@ local utils = require("g0.utils")
 local tsutil = require('nvim-treesitter.ts_utils')
 
 -- types
-ADD_TAG=0
-REMOVE_TAG=1
+ADD_TAG = 0
+REMOVE_TAG = 1
+CLEAR_TAG = 2
 
 local M = {}
 
@@ -15,6 +16,8 @@ M.modifytags = function(args, type)
     maincmd = "-remove-tags"
   elseif type == ADD_TAG then
     maincmd = "-add-tags"
+  elseif type == CLEAR_TAG then
+    maincmd = "-clear-tags"
   end
 
   local last_command = utils.get_last_usr_cmd()
@@ -46,7 +49,7 @@ M.modifytags = function(args, type)
         local ts_node = node:child(1)
         if ts_node and ts_node:child_count() >= 2 and ts_node:child(1):type() == "struct_type" then
           local struct_name = vim.treesitter.get_node_text(ts_node:child(0), 0)
-          -- NOTE: possbiliy a gomodifytags bug where sometimes it doesn't asdd/remove tags 
+          -- NOTE: possbiliy a gomodifytags bug where sometimes it doesn't asdd/remove tags
           -- when using -struct flag
           cmd = string.format("gomodifytags -file=%s -struct=%s", filename, struct_name)
         end
@@ -64,7 +67,11 @@ M.modifytags = function(args, type)
   end
 
   if not string.match(args, maincmd) then
-    cmd = cmd .. " " .. maincmd .. "=json"
+    if not type == CLEAR_TAG then
+      cmd = cmd .. " " .. maincmd .. "=json"
+    else
+      cmd = cmd .. " " .. maincmd
+    end
   end
 
   cmd = cmd .. " " .. args
@@ -104,6 +111,11 @@ end
 M.add_tags = function(...)
   local args = ... or ""
   M.modifytags(args, ADD_TAG)
+end
+
+M.clear_tags = function(...)
+  local args = ... or ""
+  M.modifytags(args, CLEAR_TAG)
 end
 
 return M

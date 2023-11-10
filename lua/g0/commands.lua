@@ -40,6 +40,7 @@ M.add_cmds = function()
 
   create_visual_command('G0AddTags', "require('g0.modifytags').add_tags('<args>')")
   create_visual_command('G0RemoveTags', "require('g0.modifytags').remove_tags('<args>')")
+  create_visual_command('G0ClearTags', "require('g0.modifytags').clear_tags('<args>')")
 end
 
 return M
