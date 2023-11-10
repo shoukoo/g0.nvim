@@ -1,17 +1,21 @@
 local utils = require("g0.utils")
 local tsutil = require('nvim-treesitter.ts_utils')
 
+-- types
+ADD_TAG=0
+REMOVE_TAG=1
+
 local M = {}
--- add json tag to all structs on that file
--- gomodifytags -file api/queries_pr.go -all -add-tags=json
--- add json tag based on the lines
--- gomodifytags -file api/queries_pr.go -line=16,19 -add-tags=jso
--- add json tag based on offset(bytes), this will transform the entire struct
--- gomodifytags -file api/queries_pr.go -offset=520 -add-tags=json
-M.add_tags = function(...)
+
+M.modifytags = function(args, type)
   require('g0.install').install("gomodifytags")
 
-  local args = ... or ""
+  local maincmd = "'"
+  if type == REMOVE_TAG then
+    maincmd = "-remove-tags"
+  elseif type == ADD_TAG then
+    maincmd = "-add-tags"
+  end
 
   local last_command = utils.get_last_usr_cmd()
   local buf = vim.api.nvim_get_current_buf()
@@ -19,7 +23,7 @@ M.add_tags = function(...)
   local cmd
 
   -- read last user cmd to determine the vim mode
-  -- if the last cmd contains '<,'>, it was in visual mode
+  -- if the last cmd contains '<,'>, the cmd was running in visual mode
   if string.match(last_command, '\'<,\'>') then
     local start_line = vim.fn.line("'<") -- Start line
     local end_line = vim.fn.line("'>") -- End line
@@ -42,6 +46,8 @@ M.add_tags = function(...)
         local ts_node = node:child(1)
         if ts_node and ts_node:child_count() >= 2 and ts_node:child(1):type() == "struct_type" then
           local struct_name = vim.treesitter.get_node_text(ts_node:child(0), 0)
+          -- NOTE: possbiliy a gomodifytags bug where sometimes it doesn't asdd/remove tags 
+          -- when using -struct flag
           cmd = string.format("gomodifytags -file=%s -struct=%s", filename, struct_name)
         end
       end
@@ -57,8 +63,8 @@ M.add_tags = function(...)
     vim.cmd('write')
   end
 
-  if not string.match(args, '-add-tags') then
-    cmd = cmd .. " -add-tags=json"
+  if not string.match(args, maincmd) then
+    cmd = cmd .. " " .. maincmd .. "=json"
   end
 
   cmd = cmd .. " " .. args
@@ -90,7 +96,14 @@ M.add_tags = function(...)
   end
 end
 
-M.remove_tag = function()
+M.remove_tags = function(...)
+  local args = ... or ""
+  M.modifytags(args, REMOVE_TAG)
+end
+
+M.add_tags = function(...)
+  local args = ... or ""
+  M.modifytags(args, ADD_TAG)
 end
 
 return M
