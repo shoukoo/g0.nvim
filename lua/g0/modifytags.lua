@@ -77,6 +77,8 @@ M.add_tags = function(...)
         return vim.notify('gomodifytags failed ' .. vim.inspect(data), vim.log.levels.ERROR)
       end
     end,
+    stdout_buffered = true,
+    stderr_buffered = true,
   })
 
   local result = vim.fn.jobwait({ job_id }, 1000)
