@@ -68,6 +68,7 @@ M.modifytags = function(args, type)
 
   if not string.match(args, maincmd) then
     if type == CLEAR_TAG then
+      -- clear-tags flag doesn't accept any value 
       cmd = cmd .. " " .. maincmd
     else
       cmd = cmd .. " " .. maincmd .. "=json"
