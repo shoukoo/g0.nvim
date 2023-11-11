@@ -67,10 +67,10 @@ M.modifytags = function(args, type)
   end
 
   if not string.match(args, maincmd) then
-    if not type == CLEAR_TAG then
-      cmd = cmd .. " " .. maincmd .. "=json"
-    else
+    if type == CLEAR_TAG then
       cmd = cmd .. " " .. maincmd
+    else
+      cmd = cmd .. " " .. maincmd .. "=json"
     end
   end
 
