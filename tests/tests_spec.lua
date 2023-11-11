@@ -285,93 +285,91 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./... -v")
   end)
+end)
+describe("g0.modifytags.add_tags", function()
+  local tmpFile
+
+  before_each(function()
+    -- get the clean go code and write it to a temporary file
+    local testFile = cur_dir .. '/tests/testData/modifytags/modifytags.go'
+    local lines = vim.fn.readfile(testFile)
+    tmpFile = vim.fn.tempname() .. '.go'
+    vim.fn.writefile(lines, tmpFile)
+  end)
+
+  after_each(function()
+    -- delete the temp file
+    cmd = 'bd! ' .. tmpFile
+    vim.cmd(cmd)
+  end)
+
+  it("G0AddTags - succeed in visual mode", function()
+
+    local golden_file = '/tests/testData/modifytags/modifytags_golden_visual_mode.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos("'<", { 0, 22, 0, 0 })
+    vim.fn.setpos("'>", { 0, 32, 0, 0 })
 
 
-  describe("g0.modifytags", function()
-    local tmpFile
+    local customCommand = "G0AddTags"
+    vim.fn.histadd("cmd", "'<,'>G0AddTags")
+    vim.api.nvim_command("execute '" .. customCommand .. "'")
 
-    before_each(function()
-      -- get the clean go code and write it to a temporary file
-      local testFile = cur_dir .. '/tests/testData/modifytags/modifytags.go'
-      local lines = vim.fn.readfile(testFile)
-      tmpFile = vim.fn.tempname() .. '.go'
-      vim.fn.writefile(lines, tmpFile)
-    end)
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
 
-    after_each(function()
-      -- delete the temp file
-      cmd = 'bd! ' .. tmpFile
-      vim.cmd(cmd)
-    end)
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
 
-    it("G0AddTags - succeed in visual mode", function()
+  end)
 
-      local golden_file = '/tests/testData/modifytags/modifytags_golden_visual_mode.go'
-      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+  it("G0AddTags - succeed, added tags to a struct", function()
 
-      local cmd = " silent exe 'e " .. tmpFile .. "'"
-      vim.cmd(cmd)
-      vim.fn.setpos("'<", { 0, 22, 0, 0 })
-      vim.fn.setpos("'>", { 0, 32, 0, 0 })
+    local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode_struct.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos(".", { 0, 16, 0, 0 })
 
 
-      local customCommand = "G0AddTags"
-      vim.fn.histadd("cmd", "'<,'>G0AddTags")
-      vim.api.nvim_command("execute '" .. customCommand .. "'")
+    local customCommand = "G0AddTags -transform=camelcase"
+    vim.fn.histadd("cmd", customCommand)
+    vim.api.nvim_command("execute '" .. customCommand .. "'")
 
-      -- wait 300 for the file to be formatted
-      vim.wait(300, function() end)
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
 
-      local buf = vim.api.nvim_get_current_buf()
-      local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
-      assert.equal(expected, result)
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
 
-    end)
+  end)
 
-    it("G0AddTags - succeed, added tags to a struct", function()
+  it("G0AddTags - succeed, added tags to a field", function()
 
-      local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode_struct.go'
-      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+    local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
 
-      local cmd = " silent exe 'e " .. tmpFile .. "'"
-      vim.cmd(cmd)
-      vim.fn.setpos(".", { 0, 16, 0, 0 })
-
-
-      local customCommand = "G0AddTags -transform=camelcase"
-      vim.fn.histadd("cmd", customCommand)
-      vim.api.nvim_command("execute '" .. customCommand .. "'")
-
-      -- wait 300 for the file to be formatted
-      vim.wait(300, function() end)
-
-      local buf = vim.api.nvim_get_current_buf()
-      local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
-      assert.equal(expected, result)
-
-    end)
-
-    it("G0AddTags - succeed, added tags to a field", function()
-
-      local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode.go'
-      local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
-
-      local cmd = " silent exe 'e " .. tmpFile .. "'"
-      vim.cmd(cmd)
-      vim.fn.setpos(".", { 0, 25, 0, 0 })
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos(".", { 0, 25, 0, 0 })
 
 
-      local customCommand = "G0AddTags -add-tags=xml"
-      vim.fn.histadd("cmd", customCommand)
-      vim.api.nvim_command("execute '" .. customCommand .. "'")
+    local customCommand = "G0AddTags -add-tags=xml"
+    vim.fn.histadd("cmd", customCommand)
+    vim.api.nvim_command("execute '" .. customCommand .. "'")
 
-      -- wait 300 for the file to be formatted
-      vim.wait(300, function() end)
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
 
-      local buf = vim.api.nvim_get_current_buf()
-      local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
-      assert.equal(expected, result)
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
 
-    end)
   end)
 end)
