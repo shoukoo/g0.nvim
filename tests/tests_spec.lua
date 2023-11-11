@@ -219,7 +219,7 @@ describe("g0.test", function()
     vim.cmd(cmd)
   end)
 
-  it("TestCurrent - succeed", function()
+  it("successfully runs TestCurrent", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
     -- spy the vim cmd and then inspect the output
@@ -229,7 +229,7 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd")
   end)
 
-  it("TestCurrent - succeed, with verbose flag", function()
+  it("successfully runs TestCurrent with verbose flag", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
     -- spy the vim cmd and then inspect the output
@@ -239,7 +239,7 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd -v")
   end)
 
-  it("TestCurrent - failed, not inside a function", function()
+  it("handles failure when not inside a function", function()
     vim.fn.setpos(".", { 0, 12, 0, 0 })
 
     -- spy the vim cmd and then inspect the output
@@ -250,7 +250,7 @@ describe("g0.test", function()
     assert.spy(vim.notify).was_called_with("Not inside a function", vim.log.levels.ERROR)
   end)
 
-  it("TestCurrent - failed, this is not a Go test file", function()
+  it("handles failure when not a Go test file", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
 
@@ -264,7 +264,7 @@ describe("g0.test", function()
     assert.spy(vim.notify).was_called_with("This is not a Go test file", vim.log.levels.ERROR)
   end)
 
-  it("TestCurrentDir - succeed", function()
+  it("successfully runs TestCurrentDir", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
 
@@ -275,7 +275,7 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./...")
   end)
 
-  it("TestCurrentDir - succeed, with verbose flag", function()
+  it("successfully runs TestCurrentDir with verbose flag", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
 
@@ -286,6 +286,7 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./... -v")
   end)
 end)
+
 describe("g0.modifytags.add_tags", function()
   local tmpFile
 
@@ -303,7 +304,7 @@ describe("g0.modifytags.add_tags", function()
     vim.cmd(cmd)
   end)
 
-  it("G0AddTags - succeed in visual mode", function()
+  it("successfully removes tags with G0AddTags in visual mode", function()
 
     local golden_file = '/tests/testData/modifytags/modifytags_golden_visual_mode.go'
     local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
@@ -327,7 +328,7 @@ describe("g0.modifytags.add_tags", function()
 
   end)
 
-  it("G0AddTags - succeed, added tags to a struct", function()
+  it("successfully adds tags with G0AddTags to a struct", function()
 
     local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode_struct.go'
     local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
@@ -350,7 +351,7 @@ describe("g0.modifytags.add_tags", function()
 
   end)
 
-  it("G0AddTags - succeed, added tags to a field", function()
+  it("successfully adds tags with G0AddTags to a field", function()
 
     local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode.go'
     local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
@@ -373,3 +374,4 @@ describe("g0.modifytags.add_tags", function()
 
   end)
 end)
+
