@@ -461,5 +461,93 @@ describe("g0.modifytags.remove_tags", function()
     assert.equal(expected, result)
 
   end)
+end)
+
+describe("g0.modifytags.clear_tags", function()
+  local tmpFile
+
+  before_each(function()
+    -- get the clean go code and write it to a temporary file
+    local testFile = cur_dir .. '/tests/testData/modifytags/modifytags_clear.go'
+    local lines = vim.fn.readfile(testFile)
+    tmpFile = vim.fn.tempname() .. '.go'
+    vim.fn.writefile(lines, tmpFile)
+  end)
+
+  after_each(function()
+    -- delete the temp file
+    cmd = 'bd! ' .. tmpFile
+    vim.cmd(cmd)
+  end)
+
+  it("successfully clear tags with G0ClearTags in visual mode", function()
+
+    local golden_file = '/tests/testData/modifytags/modifytags_clear_golden_visual_mode.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos("'<", { 0, 17, 0, 0 })
+    vim.fn.setpos("'>", { 0, 21, 0, 0 })
+
+
+    local customCommand = "G0ClearTags"
+    vim.fn.histadd("cmd", "'<,'>G0ClearTags")
+    vim.api.nvim_command("execute '" .. customCommand .. "'")
+
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
+
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
+
+  end)
+
+  it("successfully clear tags with G0ClearTags to a struct", function()
+
+    local golden_file = '/tests/testData/modifytags/modifytags_clear_golden_normal_mode_struct.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos(".", { 0, 16, 0, 0 })
+
+
+    local customCommand = "G0ClearTags"
+    vim.fn.histadd("cmd", customCommand)
+    vim.api.nvim_command("execute '" .. customCommand .. "'")
+
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
+
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
+
+  end)
+  --
+  it("successfully clear tags with G0ClearTags to a field", function()
+
+    local golden_file = '/tests/testData/modifytags/modifytags_clear_golden_normal_mode.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos(".", { 0, 20, 0, 0 })
+
+
+    local customCommand = "G0ClearTags"
+    vim.fn.histadd("cmd", customCommand)
+    vim.api.nvim_command("execute '" .. customCommand .. "'")
+
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
+
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
+
+  end)
 
 end)
