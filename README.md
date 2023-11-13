@@ -86,7 +86,7 @@ Run the go test with the integration tag
 
 ### :[range]G0AddTags {args}
 ![](./gif/g0addtags.gif)
-Running plain :G0AddTags executes the `gomodifyfiles -file={file dir} -add-tags=json` command to the current file. You can also provide additional valid flags as needed, which are documented in the [gomodifytags](https://github.com/fatih/gomodifytags) repo. Please note that it utilises default values from gomodifytags; for instance, it defaults to using `snake_case` for the tags
+Running plain `:G0AddTags` executes the `gomodifyfiles -file={file dir} -add-tags=json` command to the current file. You can also provide additional valid flags as needed, which are documented in the [gomodifytags](https://github.com/fatih/gomodifytags) repo. Please note that it utilises default values from gomodifytags; for instance, it defaults to using `snake_case` for the tags
  
 
 To add tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below. To add a tag to a specific field, move your cursor to that field run the same cmd.
@@ -109,4 +109,43 @@ To use camelCase for the tags, run the cmd below
 
 ```lua
 :G0AddTags -transform=camelcase
+```
+
+### :[range]G0RemoveTags {args}
+Plain `G0RemoveTags` executes the `gomodifytags -file={file} -remove-tags=json` command to the current file. You can also override the flags as needed, you can find additional flags from the [gomodifytags](https://github.com/fatih/gomodifytags) repo 
+
+To remove json tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below.
+```lua
+:G0RemoveTags
+```
+
+Highlight the fields in visual mode, and then execute the following command to remove json tags to them.
+
+```lua
+:'<,'>G0RemoveTags
+```
+
+To remove both xml and json tags, run the cmd below
+
+```lua
+:G0RemoveTags -remove-tags=xml,json
+```
+### :[range]G0ClearTags {args}
+Plain `G0ClearTags` executes the `gomodifytags -file={file} -clear-tags` command to the current file. You can also override the flags as needed, you can find additional flags from the [gomodifytags](https://github.com/fatih/gomodifytags) repo 
+
+To clear tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below.
+```lua
+:G0ClearTags
+```
+
+Highlight the fields in visual mode, and then execute the following command to remove json tags to them.
+
+```lua
+:'<,'>G0ClearTags
+```
+
+To remove both xml and json tags, run the cmd below
+
+```lua
+:G0ClearTags
 ```
