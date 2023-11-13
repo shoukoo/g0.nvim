@@ -1,4 +1,4 @@
-*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 11
+*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 13
 
 ==============================================================================
 Table of Contents                                  *g0.nvim-table-of-contents*
@@ -120,7 +120,7 @@ Run the go test with the integration tag
 
 :[RANGE]G0ADDTAGS {ARGS} ~
 
-Running plain :G0AddTags executes the `gomodifyfiles -file={file dir}
+Running plain `:G0AddTags` executes the `gomodifyfiles -file={file dir}
 -add-tags=json` command to the current file. You can also provide additional
 valid flags as needed, which are documented in the gomodifytags
 <https://github.com/fatih/gomodifytags> repo. Please note that it utilises
@@ -152,6 +152,62 @@ To use camelCase for the tags, run the cmd below
 
 >lua
     :G0AddTags -transform=camelcase
+<
+
+
+:[RANGE]G0REMOVETAGS {ARGS} ~
+
+Plain `G0RemoveTags` executes the `gomodifytags -file={file} -remove-tags=json`
+command to the current file. You can also override the flags as needed, you can
+find additional flags from the gomodifytags
+<https://github.com/fatih/gomodifytags> repo
+
+To remove json tags to the entire struct, position your cursor at the beginning
+of the struct and run the cmd below.
+
+>lua
+    :G0RemoveTags
+<
+
+Highlight the fields in visual mode, and then execute the following command to
+remove json tags to them.
+
+>lua
+    :'<,'>G0RemoveTags
+<
+
+To remove both xml and json tags, run the cmd below
+
+>lua
+    :G0RemoveTags -remove-tags=xml,json
+<
+
+
+:[RANGE]G0CLEARTAGS {ARGS} ~
+
+Plain `G0ClearTags` executes the `gomodifytags -file={file} -clear-tags`
+command to the current file. You can also override the flags as needed, you can
+find additional flags from the gomodifytags
+<https://github.com/fatih/gomodifytags> repo
+
+To clear tags to the entire struct, position your cursor at the beginning of
+the struct and run the cmd below.
+
+>lua
+    :G0ClearTags
+<
+
+Highlight the fields in visual mode, and then execute the following command to
+remove json tags to them.
+
+>lua
+    :'<,'>G0ClearTags
+<
+
+To remove both xml and json tags, run the cmd below
+
+>lua
+    :G0ClearTags
 <
 
 ==============================================================================
