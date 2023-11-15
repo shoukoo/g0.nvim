@@ -5,14 +5,6 @@ local create_cmd = function(cmd, func, opt)
   vim.api.nvim_create_user_command(cmd, func, opt)
 end
 
--- nvim_create_user_command doesn't support -range thus it must to do it the vim cmd
-local create_visual_command = function(cmd, func)
-  local command_definition = string.format(
-    "command! -nargs=* -range %s :lua %s", cmd, func
-  )
-  vim.cmd(command_definition)
-end
-
 M.add_cmds = function()
   create_cmd('G0TestCurrentDir', function(opts)
     require('g0.test').test_current_dir(opts.fargs)
@@ -38,9 +30,17 @@ M.add_cmds = function()
     require('g0.format').goimports()
   end)
 
-  create_visual_command('G0AddTags', "require('g0.modifytags').add_tags('<args>')")
-  create_visual_command('G0RemoveTags', "require('g0.modifytags').remove_tags('<args>')")
-  create_visual_command('G0ClearTags', "require('g0.modifytags').clear_tags('<args>')")
+  create_cmd('G0AddTags', function(opts)
+    require('g0.modifytags').add_tags(opts.args)
+  end, { nargs = '*', range=true })
+
+  create_cmd('G0RemoveTags', function(opts)
+    require('g0.modifytags').remove_tags(opts.args)
+  end, { nargs = '*', range=true })
+
+  create_cmd('G0ClearTags', function(opts)
+    require('g0.modifytags').clear_tags(opts.args)
+  end, { nargs = '*', range=true })
 end
 
 return M
