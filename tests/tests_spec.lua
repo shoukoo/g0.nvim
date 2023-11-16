@@ -4,6 +4,28 @@ local match = require 'luassert.match'
 local cur_dir = vim.fn.expand('%:p:h')
 local utils = require "g0.utils"
 
+describe("g0.config", function()
+  it("override gotest.verbose to true", function()
+
+    local config = require "g0.config"
+
+    -- prepare expected data
+    local expected          = config.defaults
+    expected.gotest.verbose = true
+    expected.gomodifytags.tags = "json,xml"
+
+    local opts = {
+      gotest = { verbose = true },
+      gomodifytags = { tags = "json,xml"}
+    }
+    local c = config.merge(opts)
+
+
+    assert.equal(c.gotest.verbose, expected.gotest.verbose)
+  end)
+
+end)
+
 describe("g0.utils", function()
 
   it("can be required", function()
