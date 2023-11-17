@@ -5,7 +5,7 @@ local create_cmd = function(cmd, func, opt)
   vim.api.nvim_create_user_command(cmd, func, opt)
 end
 
-M.add_cmds = function()
+M.add_cmds = function(config)
   create_cmd('G0TestCurrentDir', function(opts)
     require('g0.test').test_current_dir(opts.fargs)
   end, { nargs = "*" })
@@ -31,15 +31,15 @@ M.add_cmds = function()
   end)
 
   create_cmd('G0AddTags', function(opts)
-    require('g0.modifytags').add_tags(opts.args)
+    require('g0.modifytags').add_tags(opts.args, config)
   end, { nargs = '*', range=true })
 
   create_cmd('G0RemoveTags', function(opts)
-    require('g0.modifytags').remove_tags(opts.args)
+    require('g0.modifytags').remove_tags(opts.args, config)
   end, { nargs = '*', range=true })
 
   create_cmd('G0ClearTags', function(opts)
-    require('g0.modifytags').clear_tags(opts.args)
+    require('g0.modifytags').clear_tags(opts.args, config)
   end, { nargs = '*', range=true })
 end
 
