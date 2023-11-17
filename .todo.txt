@@ -1,9 +1,10 @@
-- add function for GoAddTags
-- rework test 
+- Add default to GoTest and GoModify
+- Add doc about the default config + examples
+- Add debug feature + turn on based on the default config
 - Add default config in neovim 
   - https://github.com/folke/neodev.nvim/blob/main/lua/neodev/config.lua
-- add Doc
-  - update doc with example
+- rework test 
+- run test on github action
 - Add Ci
   - create release
 
