@@ -117,7 +117,9 @@ local flag_parser = function(args, config, type)
   end
 
   if not string.match(args, "transform") then
-    cmd = cmd .. " " .. "-transform=" .. config_trans
+    if type ~= CLEAR_TAG then
+      cmd = cmd .. " " .. "-transform=" .. config_trans
+    end
   end
 
   cmd = cmd .. " " .. args
