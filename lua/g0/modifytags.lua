@@ -11,15 +11,6 @@ local M = {}
 M.modifytags = function(args, type)
   require('g0.install').install("gomodifytags")
 
-  local maincmd = "'"
-  if type == REMOVE_TAG then
-    maincmd = "-remove-tags"
-  elseif type == ADD_TAG then
-    maincmd = "-add-tags"
-  elseif type == CLEAR_TAG then
-    maincmd = "-clear-tags"
-  end
-
   local last_command = utils.get_last_usr_cmd()
   local buf = vim.api.nvim_get_current_buf()
   local filename = vim.api.nvim_buf_get_name(buf)
@@ -66,15 +57,6 @@ M.modifytags = function(args, type)
     vim.cmd('write')
   end
 
-  if not string.match(args, maincmd) then
-    if type == CLEAR_TAG then
-      -- clear-tags flag doesn't accept any value 
-      cmd = cmd .. " " .. maincmd
-    else
-      cmd = cmd .. " " .. maincmd .. "=json"
-    end
-  end
-
   cmd = cmd .. " " .. args
 
   local job_id = vim.fn.jobstart(cmd, {
@@ -104,19 +86,62 @@ M.modifytags = function(args, type)
   end
 end
 
-M.remove_tags = function(...)
-  local args = ... or ""
-  M.modifytags(args, REMOVE_TAG)
+local required_flag = function(type)
+  local flag
+  if type == REMOVE_TAG then
+    flag = "-remove-tags"
+  elseif type == ADD_TAG then
+    flag = "-add-tags"
+  elseif type == CLEAR_TAG then
+    flag = "-clear-tags"
+  end
+  return flag
 end
 
-M.add_tags = function(...)
-  local args = ... or ""
-  M.modifytags(args, ADD_TAG)
+local function escape_pattern(s)
+  return (s:gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", "%%%1"))
 end
 
-M.clear_tags = function(...)
-  local args = ... or ""
-  M.modifytags(args, CLEAR_TAG)
+local flag_parser = function(args, config, type)
+  local main_flag = required_flag(type)
+  local config_tag = config.gomodifytags.tags
+  local config_trans = config.gomodifytags.transform
+  local cmd = ""
+
+  if not string.match(args, escape_pattern(main_flag)) then
+    if type == CLEAR_TAG then
+      cmd = main_flag
+    else
+      cmd = main_flag .. "=" .. config_tag
+    end
+  end
+
+  if not string.match(args, "transform") then
+    cmd = cmd .. " " .. "-transform=" .. config_trans
+  end
+
+  cmd = cmd .. " " .. args
+
+  return cmd
+end
+
+M.add_tags = function(args, config)
+  config = config or require("g0.config").defaults
+  args = args or ""
+  M.modifytags(flag_parser(args, config, ADD_TAG), ADD_TAG)
+end
+
+M.remove_tags = function(args, config)
+  config = config or require("g0.config").defaults
+  args = args or ""
+  M.modifytags(flag_parser(args, config, REMOVE_TAG), REMOVE_TAG)
+end
+
+
+M.clear_tags = function(args, config)
+  config = config or require("g0.config").defaults
+  args = args or ""
+  M.modifytags(flag_parser(args, config, CLEAR_TAG), CLEAR_TAG)
 end
 
 return M
