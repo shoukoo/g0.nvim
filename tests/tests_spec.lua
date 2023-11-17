@@ -304,7 +304,7 @@ describe("g0.modifytags.add_tags", function()
     vim.cmd(cmd)
   end)
 
-  it("successfully removes tags with G0AddTags in visual mode", function()
+  it("successfully add tags with G0AddTags in visual mode", function()
 
     local golden_file = '/tests/testData/modifytags/modifytags_golden_visual_mode.go'
     local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
