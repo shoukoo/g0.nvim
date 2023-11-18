@@ -98,17 +98,13 @@ local required_flag = function(type)
   return flag
 end
 
-local function escape_pattern(s)
-  return (s:gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", "%%%1"))
-end
-
 local flag_parser = function(args, config, type)
   local main_flag = required_flag(type)
   local config_tag = config.gomodifytags.tags
   local config_trans = config.gomodifytags.transform
   local cmd = ""
 
-  if not string.match(args, escape_pattern(main_flag)) then
+  if not string.match(args, utils.escape_pattern(main_flag)) then
     if type == CLEAR_TAG then
       cmd = main_flag
     else

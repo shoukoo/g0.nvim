@@ -84,4 +84,9 @@ M.get_last_usr_cmd = function()
   return nil
 end
 
+-- this is to escape dash character
+M.escape_pattern = function(s)
+  return (s:gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", "%%%1"))
+end
+
 return M
