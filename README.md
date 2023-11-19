@@ -16,13 +16,18 @@ Neovim plugin for Golang
 ### :G0Imports
 
 Copy below to run goimports on save
-
 ```lua
 local format_sync_grp = vim.api.nvim_create_augroup("G0Import", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.go",
   callback = function()
-    require('g0.format').goimports()
+    local success, result = pcall(function()
+      require('g0.format').goimports()
+    end)
+
+    if not success then
+      vim.notify(result, vim.log.levels.ERROR)
+    end
   end,
   group = format_sync_grp,
 })
@@ -39,13 +44,13 @@ These are the available packages that can be installed using the command. To add
 
 To install the goimports pkg
 
-```lua
+```vim
 :G0Install goimports
 ```
 
 To install the gopls pkg
 
-```lua
+```vim
 :G0Install gopls 
 ```
 ### :G0InstallAll
@@ -59,13 +64,13 @@ Running :G0TestCurrent executes the `cd {file dir} && go test -run <func name>` 
 
 Run the go test with the verbose flag
 
-```lua
+```vim
 :G0TestCurrent -v
 ```
 
 Run the go test with the integration tag
 
-```lua
+```vim
 :G0TestCurrent --tag=integration
 ```
 
@@ -74,13 +79,13 @@ Running :G0TestCurrentDir executes the `cd {file dir} && go test ./...` command 
 
 Run the go test with the verbose flag
 
-```lua
+```vim
 :G0TestCurrentDir -v
 ```
 
 Run the go test with the integration tag
 
-```lua
+```vim
 :G0TestCurrentDir --tag=integration
 ```
 
@@ -90,24 +95,24 @@ Running plain `:G0AddTags` executes the `gomodifyfiles -file={file dir} -add-tag
  
 
 To add tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below. To add a tag to a specific field, move your cursor to that field run the same cmd.
-```lua
+```vim
 :G0AddTags
 ```
 
 Highlight the fields in visual mode, and then execute the following command to add tags to them.
 
-```lua
+```vim
 :'<,'>G0AddTags
 ```
 
 To add both xml and json tags, run the cmd below
 
-```lua
+```vim
 :G0AddTags -add-tags=xml,json
 ```
 To use camelCase for the tags, run the cmd below
 
-```lua
+```vim
 :G0AddTags -transform=camelcase
 ```
 
@@ -115,37 +120,37 @@ To use camelCase for the tags, run the cmd below
 Plain `G0RemoveTags` executes the `gomodifytags -file={file} -remove-tags=json` command to the current file. You can also override the flags as needed, you can find additional flags from the [gomodifytags](https://github.com/fatih/gomodifytags) repo 
 
 To remove json tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below.
-```lua
+```vim
 :G0RemoveTags
 ```
 
 Highlight the fields in visual mode, and then execute the following command to remove json tags to them.
 
-```lua
+```vim
 :'<,'>G0RemoveTags
 ```
 
 To remove both xml and json tags, run the cmd below
 
-```lua
+```vim
 :G0RemoveTags -remove-tags=xml,json
 ```
 ### :[range]G0ClearTags {args}
 Plain `G0ClearTags` executes the `gomodifytags -file={file} -clear-tags` command to the current file. You can also override the flags as needed, you can find additional flags from the [gomodifytags](https://github.com/fatih/gomodifytags) repo 
 
 To clear tags to the entire struct, position your cursor at the beginning of the struct and run the cmd below.
-```lua
+```vim
 :G0ClearTags
 ```
 
 Highlight the fields in visual mode, and then execute the following command to remove json tags to them.
 
-```lua
+```vim
 :'<,'>G0ClearTags
 ```
 
 To remove both xml and json tags, run the cmd below
 
-```lua
+```vim
 :G0ClearTags
 ```
