@@ -1,8 +1,9 @@
 local M = {}
 local utils = require "g0.utils"
 
-M.goimports = function()
+M.goimports = function(config)
   require('g0.install').install("goimports")
+  config = config or require("g0.config").defaults
 
   local buf = vim.api.nvim_get_current_buf()
 
@@ -35,8 +36,7 @@ M.goimports = function()
     stderr_buffered = true,
   })
 
-  -- timeout in 1 second
-  local result = vim.fn.jobwait({ job_id }, 1000)
+  local result = vim.fn.jobwait({ job_id }, config.timeout)
 
   -- only ran 1 cmd thus getting result from the first index
   if result[1] == -1 then
