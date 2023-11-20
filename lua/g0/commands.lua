@@ -7,11 +7,11 @@ end
 
 M.add_cmds = function(config)
   create_cmd('G0TestCurrentDir', function(opts)
-    require('g0.test').test_current_dir(opts.fargs)
+    require('g0.test').test_current_dir(opts.args, config)
   end, { nargs = "*" })
 
   create_cmd('G0TestCurrent', function(opts)
-    require('g0.test').test_current(opts.fargs)
+    require('g0.test').test_current(opts.args, config)
   end, { nargs = '*' })
 
   create_cmd('G0Install', function(opts)
@@ -27,7 +27,7 @@ M.add_cmds = function(config)
   end)
 
   create_cmd('G0Imports', function(_)
-    require('g0.format').goimports()
+    require('g0.format').goimports(config)
   end)
 
   create_cmd('G0AddTags', function(opts)

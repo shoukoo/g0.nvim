@@ -234,7 +234,7 @@ describe("g0.test", function()
 
     -- spy the vim cmd and then inspect the output
     spy.on(vim, "cmd")
-    require("g0.test").test_current({ "-v" })
+    require("g0.test").test_current("-v")
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd -v")
   end)
@@ -264,6 +264,7 @@ describe("g0.test", function()
     assert.spy(vim.notify).was_called_with("This is not a Go test file", vim.log.levels.ERROR)
   end)
 
+  -- TestCurrentDir
   it("successfully runs TestCurrentDir", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
@@ -281,7 +282,7 @@ describe("g0.test", function()
 
     -- spy the vim cmd and then inspect the output
     spy.on(vim, "cmd")
-    require("g0.test").test_current_dir({ "-v" })
+    require("g0.test").test_current_dir("-v")
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./... -v")
   end)
