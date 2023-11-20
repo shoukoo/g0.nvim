@@ -373,6 +373,35 @@ describe("g0.modifytags.add_tags", function()
     assert.equal(expected, result)
 
   end)
+
+  it("successfully adds tags with G0AddTags with custom config", function()
+
+    local golden_file = '/tests/testData/modifytags/modifytags_golden_normal_mode_config.go'
+    local expected = vim.fn.join(vim.fn.readfile(cur_dir .. golden_file), '\n')
+
+    local cmd = " silent exe 'e " .. tmpFile .. "'"
+    vim.cmd(cmd)
+    vim.fn.setpos(".", { 0, 25, 0, 0 })
+
+
+    local config = {
+      gomodifytags = {
+        tags = "xml,json",
+        transform = "camelcase"
+      }
+    }
+    local customCommand = "G0AddTags"
+    vim.fn.histadd("cmd", customCommand)
+    require("g0.modifytags").add_tags(nil, config)
+
+    -- wait 300 for the file to be formatted
+    vim.wait(300, function() end)
+
+    local buf = vim.api.nvim_get_current_buf()
+    local result = vim.fn.join(vim.api.nvim_buf_get_lines(buf, 0, -1, false), "\n")
+    assert.equal(expected, result)
+
+  end)
 end)
 
 describe("g0.modifytags.remove_tags", function()
