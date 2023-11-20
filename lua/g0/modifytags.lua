@@ -24,9 +24,6 @@ M.modifytags = function(args, type)
     cmd = string.format("gomodifytags -file %s -line=%s", filename, start_line .. "," .. end_line)
   else
 
-    -- NOTE: treesitter doesn't return the right node when providing a position in the get_node func
-    -- the column calculation is different between treesitter and vim
-    -- vim include the indentation when counting the column where treesitter doesn't
     local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
     row = row - 1
 
@@ -134,7 +131,6 @@ M.remove_tags = function(args, config)
   args = args or ""
   M.modifytags(flag_parser(args, config, REMOVE_TAG), REMOVE_TAG)
 end
-
 
 M.clear_tags = function(args, config)
   config = config or require("g0.config").defaults
