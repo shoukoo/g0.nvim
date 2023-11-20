@@ -1,4 +1,4 @@
-*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 17
+*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 20
 
 ==============================================================================
 Table of Contents                                  *g0.nvim-table-of-contents*
@@ -39,7 +39,13 @@ Copy below to run goimports on save
     vim.api.nvim_create_autocmd("BufWritePre", {
       pattern = "*.go",
       callback = function()
-        require('g0.format').goimports()
+        local success, result = pcall(function()
+          require('g0.format').goimports()
+        end)
+    
+        if not success then
+          vim.notify(result, vim.log.levels.ERROR)
+        end
       end,
       group = format_sync_grp,
     })
@@ -59,13 +65,13 @@ install it
   gopls          golang.org/x/tools/gopls
 To install the goimports pkg
 
->lua
+>vim
     :G0Install goimports
 <
 
 To install the gopls pkg
 
->lua
+>vim
     :G0Install gopls 
 <
 
@@ -88,13 +94,13 @@ valid flags as needed, which are documented in go help test.
 
 Run the go test with the verbose flag
 
->lua
+>vim
     :G0TestCurrent -v
 <
 
 Run the go test with the integration tag
 
->lua
+>vim
     :G0TestCurrent --tag=integration
 <
 
@@ -107,13 +113,13 @@ flags as needed, which are documented in go help test.
 
 Run the go test with the verbose flag
 
->lua
+>vim
     :G0TestCurrentDir -v
 <
 
 Run the go test with the integration tag
 
->lua
+>vim
     :G0TestCurrentDir --tag=integration
 <
 
@@ -131,26 +137,26 @@ To add tags to the entire struct, position your cursor at the beginning of the
 struct and run the cmd below. To add a tag to a specific field, move your
 cursor to that field run the same cmd.
 
->lua
+>vim
     :G0AddTags
 <
 
 Highlight the fields in visual mode, and then execute the following command to
 add tags to them.
 
->lua
+>vim
     :'<,'>G0AddTags
 <
 
 To add both xml and json tags, run the cmd below
 
->lua
+>vim
     :G0AddTags -add-tags=xml,json
 <
 
 To use camelCase for the tags, run the cmd below
 
->lua
+>vim
     :G0AddTags -transform=camelcase
 <
 
@@ -165,20 +171,20 @@ find additional flags from the gomodifytags
 To remove json tags to the entire struct, position your cursor at the beginning
 of the struct and run the cmd below.
 
->lua
+>vim
     :G0RemoveTags
 <
 
 Highlight the fields in visual mode, and then execute the following command to
 remove json tags to them.
 
->lua
+>vim
     :'<,'>G0RemoveTags
 <
 
 To remove both xml and json tags, run the cmd below
 
->lua
+>vim
     :G0RemoveTags -remove-tags=xml,json
 <
 
@@ -193,20 +199,20 @@ find additional flags from the gomodifytags
 To clear tags to the entire struct, position your cursor at the beginning of
 the struct and run the cmd below.
 
->lua
+>vim
     :G0ClearTags
 <
 
 Highlight the fields in visual mode, and then execute the following command to
 remove json tags to them.
 
->lua
+>vim
     :'<,'>G0ClearTags
 <
 
 To remove both xml and json tags, run the cmd below
 
->lua
+>vim
     :G0ClearTags
 <
 
