@@ -1,11 +1,12 @@
-- Add default to GoTest and GoModify
+- Add default to GoTest and GoImports
+- Add option default for gomodifytags
 - Add doc about the default config + examples
+- add gomodtidy cmd
 - Add debug feature + turn on based on the default config
 - Add default config in neovim 
   - https://github.com/folke/neodev.nvim/blob/main/lua/neodev/config.lua
 - rework test 
 - run test on github action
-- Add Ci
-  - create release
+- create release
 
 
