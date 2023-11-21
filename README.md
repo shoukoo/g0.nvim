@@ -1,4 +1,4 @@
-# g0.nvim
+# 🐹 g0.nvim
 A lightweight G0 neovim plugin that focuses on simplicity and efficiency
 
 ## 🗳️ Requirements
