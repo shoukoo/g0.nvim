@@ -32,3 +32,8 @@ type DivisionByZeroError struct{}
 func (e *DivisionByZeroError) Error() string {
 	return "division by zero"
 }
+
+type Math struct {
+	Num1 int
+	Num2 int
+}

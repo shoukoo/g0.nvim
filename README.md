@@ -1,6 +1,9 @@
 # g0.nvim
 Neovim plugin for Golang
 
+## Requirements
+Neovim >= 0.9.0
+
 ## Installation
 
 ### Lazy.nvim
@@ -10,6 +13,43 @@ Neovim plugin for Golang
       require("g0").setup()
     end
   }
+```
+
+You can also modify the defaults config
+```lua
+  { 'shoukoo/g0.nvim',
+    config = function ()
+      require("g0").setup({
+        gomodifytags = {
+          tags = "xml,json"
+        }
+      })
+    end
+  }
+```
+
+## Configuration
+
+g0 comes with the following defaults
+
+```lua
+{
+  gotest = {
+    -- run go test in verbose mode
+    verbose = false
+  },
+  gomodifytags = {
+    -- https://github.com/fatih/gomodifytags#transformations
+    -- Transform adds a transform rule when adding tags.
+    -- Current options: [snakecase, camelcase, lispcase, pascalcase, titlecase, keep]
+    transform = "snakecase",
+    -- Add/Remove tags for the comma separated list of keys. i.e.: json,xml
+    tags = "json"
+  },
+  -- timeout in seconds, mainly used by goimports
+  timeout = 1000
+  debug = false,
+}
 ```
 ## Commands
 
@@ -60,6 +100,7 @@ Install all the available packages
 Update all the available packages
 
 ### :G0TestCurrent {args}
+![](./media/g0testcurrent.gif)
 Running :G0TestCurrent executes the `cd {file dir} && go test -run <func name>` command in the directory of the current file. You can also provide additional valid flags as needed, which are documented in go help test.
 
 Run the go test with the verbose flag
@@ -90,7 +131,7 @@ Run the go test with the integration tag
 ```
 
 ### :[range]G0AddTags {args}
-![](./gif/g0addtags.gif)
+![](./media/g0addtags.gif)
 Running plain `:G0AddTags` executes the `gomodifyfiles -file={file dir} -add-tags=json` command to the current file. You can also provide additional valid flags as needed, which are documented in the [gomodifytags](https://github.com/fatih/gomodifytags) repo. Please note that it utilises default values from gomodifytags; for instance, it defaults to using `snake_case` for the tags
  
 
