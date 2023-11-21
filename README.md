@@ -1,10 +1,10 @@
 # g0.nvim
-Neovim plugin for Golang
+A lightweight G0 neovim plugin that focuses on simplicity and efficiency
 
-## Requirements
+## 🗳️ Requirements
 Neovim >= 0.9.0
 
-## Installation
+## 🚀 Installation
 
 ### Lazy.nvim
 ```lua
@@ -28,7 +28,7 @@ You can also modify the defaults config
   }
 ```
 
-## Configuration
+## 🗄️ Configuration
 
 g0 comes with the following defaults
 
@@ -51,7 +51,7 @@ g0 comes with the following defaults
   debug = false,
 }
 ```
-## Commands
+## 🎬 Commands
 
 ### :G0Imports
 
