@@ -12,7 +12,7 @@ Table of Contents                                  *g0.nvim-table-of-contents*
 ==============================================================================
 1. g0.nvim                                                   *g0.nvim-g0.nvim*
 
-A lightweight G0 neovim plugin that focuses on simplicity and efficiency
+A lightweight Golang neovim plugin that focuses on simplicity and efficiency
 
 
 REQUIREMENTS                                    *g0.nvim-g0.nvim-requirements*
