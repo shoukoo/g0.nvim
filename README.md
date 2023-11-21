@@ -1,5 +1,5 @@
 # 🐹 g0.nvim
-A lightweight G0 neovim plugin that focuses on simplicity and efficiency
+A lightweight Golang neovim plugin that focuses on simplicity and efficiency
 
 ## 🗳️ Requirements
 Neovim >= 0.9.0
