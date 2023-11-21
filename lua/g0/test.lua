@@ -1,3 +1,4 @@
+local utils = require("g0.utils")
 local M = {}
 
 local float_win = function(buf, cmd)
@@ -20,8 +21,17 @@ local float_win = function(buf, cmd)
   return win_id
 end
 
+local parse_args = function (args, config)
+  local is_verbose = config.gotest.verbose
+  if not string.match(args, utils.escape_pattern("-v")) and is_verbose then
+      args = args .. " -v"
+  end
+  return args
+end
+
 M.test_current_dir = function(args, config)
   config = config or require("g0.config").defaults
+  args = parse_args(args or "", config)
 
   local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
 
@@ -49,6 +59,7 @@ end
 -- test_current only read the "-v" argument
 M.test_current = function(args, config)
   config = config or require("g0.config").defaults
+  args = parse_args(args or "", config)
 
   -- Query Tree-sitter for the current function node
   local node = vim.treesitter.get_node()

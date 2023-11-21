@@ -239,6 +239,16 @@ describe("g0.test", function()
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd -v")
   end)
 
+  it("successfully runs TestCurrent with verbose true in config", function()
+    vim.fn.setpos(".", { 0, 6, 5, 0 })
+
+    -- spy the vim cmd and then inspect the output
+    spy.on(vim, "cmd")
+    require("g0.test").test_current("", { gotest = { verbose = true } })
+    assert.spy(vim.cmd).was_called(1)
+    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd  -v")
+  end)
+
   it("handles failure when not inside a function", function()
     vim.fn.setpos(".", { 0, 12, 0, 0 })
 
@@ -285,6 +295,17 @@ describe("g0.test", function()
     require("g0.test").test_current_dir("-v")
     assert.spy(vim.cmd).was_called(1)
     assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./... -v")
+  end)
+
+  it("successfully runs TestCurrentDir with verbose true in config", function()
+    local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
+    vim.cmd(cmd)
+
+    -- spy the vim cmd and then inspect the output
+    spy.on(vim, "cmd")
+    require("g0.test").test_current_dir("", { gotest = { verbose = true } })
+    assert.spy(vim.cmd).was_called(1)
+    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./...  -v")
   end)
 end)
 
