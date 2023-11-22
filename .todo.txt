@@ -1,3 +1,4 @@
+- Add makefile target to build gif
 - add gomodtidy cmd
 - Add debug feature + turn on based on the default config
 - Add default config in neovim 
