@@ -1,6 +1,3 @@
-- Add default to GoTest and GoImports
-- Add option default for gomodifytags
-- Add doc about the default config + examples
 - add gomodtidy cmd
 - Add debug feature + turn on based on the default config
 - Add default config in neovim 
