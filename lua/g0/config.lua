@@ -11,7 +11,9 @@ M.defaults = {
     -- Current options: [snakecase, camelcase, lispcase, pascalcase, titlecase, keep]
     transform = "snakecase",
     -- Add/Remove tags for the comma separated list of keys. i.e.: json,xml
-    tags = "json"
+    tags = "json",
+    -- Add the options per given key. i.e: json=omitempty,hcl=squash
+    options = ""
   },
   debug = false,
   -- timeout in seconds, mainly used by goimports

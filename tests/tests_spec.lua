@@ -409,7 +409,8 @@ describe("g0.modifytags.add_tags", function()
     local config = {
       gomodifytags = {
         tags = "xml,json",
-        transform = "camelcase"
+        transform = "camelcase",
+        options = "json=omitempty"
       }
     }
     local customCommand = "G0AddTags"

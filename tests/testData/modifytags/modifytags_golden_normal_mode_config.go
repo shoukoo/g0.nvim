@@ -22,7 +22,7 @@ type PullRequest struct {
 	URL                 string
 	BaseRefName         string
 	HeadRefName         string
-	HeadRefOid          string `xml:"headRefOid" json:"headRefOid"`
+	HeadRefOid          string `xml:"headRefOid" json:"headRefOid,omitempty"`
 	Body                string
 	Mergeable           string
 	Additions           int

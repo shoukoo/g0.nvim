@@ -99,6 +99,7 @@ local flag_parser = function(args, config, type)
   local main_flag = required_flag(type)
   local config_tag = config.gomodifytags.tags
   local config_trans = config.gomodifytags.transform
+  local config_opts = config.gomodifytags.options
   local cmd = ""
 
   if not string.match(args, utils.escape_pattern(main_flag)) then
@@ -112,6 +113,16 @@ local flag_parser = function(args, config, type)
   if not string.match(args, "transform") then
     if type ~= CLEAR_TAG then
       cmd = cmd .. " " .. "-transform=" .. config_trans
+    end
+  end
+
+  if not string.match(args, utils.escape_pattern("-options")) then
+    if config_opts ~= "" then
+      if type == ADD_TAG then
+        cmd = cmd .. " " .. "-add-options=" .. config_opts
+      elseif type == REMOVE_TAG then
+        cmd = cmd .. " " .. "-remove-options=" .. config_opts
+      end
     end
   end
 
