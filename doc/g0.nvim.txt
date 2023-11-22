@@ -1,4 +1,4 @@
-*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 21
+*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 22
 
 ==============================================================================
 Table of Contents                                  *g0.nvim-table-of-contents*
@@ -64,7 +64,9 @@ g0 comes with the following defaults
         -- Current options: [snakecase, camelcase, lispcase, pascalcase, titlecase, keep]
         transform = "snakecase",
         -- Add/Remove tags for the comma separated list of keys. i.e.: json,xml
-        tags = "json"
+        tags = "json",
+        -- Add the options per given key. i.e: json=omitempty,hcl=squash
+        options = ""
       },
       -- timeout in seconds, mainly used by goimports
       timeout = 1000
