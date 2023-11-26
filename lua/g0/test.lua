@@ -21,12 +21,77 @@ local float_win = function(buf, cmd)
   return win_id
 end
 
-local parse_args = function (args, config)
+local parse_args = function(args, config)
   local is_verbose = config.gotest.verbose
   if not string.match(args, utils.escape_pattern("-v")) and is_verbose then
-      args = args .. " -v"
+    args = args .. " -v"
   end
   return args
+end
+
+local history = {}
+
+M.test_current_dir2 = function(args, config)
+  config = config or require("g0.config").defaults
+  args = parse_args(args or "", config)
+
+  local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
+
+  local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
+  local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
+
+  local command = "cd " .. current_directory .. " && go test ./..."
+  if args and args ~= "" then
+    command = command .. " " .. args
+  end
+
+  local win_id = float_win(buf, command)
+
+  local job_id = vim.fn.jobstart(command, {
+    on_stdout= function(_, data, _)
+      data = utils.handle_job_data(data)
+      if not data then
+        return
+      end
+      vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
+      table.insert(history, data)
+      vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
+    end,
+    on_stderr= function(_, data, _)
+      data = utils.handle_job_data(data)
+      if data then
+        vim.notify('gotest failed ' .. vim.inspect(data), vim.log.levels.ERROR)
+        return
+      end
+    end,
+    on_exit = function(_, status)
+      if status == 0 then
+      else
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "Error executing command" })
+        vim.api.nvim_win_set_cursor(win_id, { 1, 0 })
+      end
+
+      vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
+        noremap = true,
+        silent = true,
+      })
+    end,
+  })
+
+  -- Asynchronous timer to check for updates every 500 milliseconds
+  local timer = vim.loop.new_timer()
+  vim.loop.timer_start(timer, 500, 0, vim.schedule_wrap(function()
+    if not vim.fn.jobwait({ job_id }, 0)[1] == -1 then
+      print("finished")
+      -- The job has finished
+      vim.fn.timer_stop(timer)
+      vim.fn.jobstop(job_id)
+    else
+      print("wait")
+      -- The job is still running, you can add additional logic here
+    end
+  end))
+
 end
 
 M.test_current_dir = function(args, config)
