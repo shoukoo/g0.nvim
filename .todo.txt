@@ -1,11 +1,8 @@
-- Add makefile target to build gif
+- rework test 
+  - keep test history
 - add gomodtidy cmd
 - support delve
-- add delve
 - Add debug feature + turn on based on the default config
-- Add default config in neovim 
-  - https://github.com/folke/neodev.nvim/blob/main/lua/neodev/config.lua
-- rework test 
 - run test on github action
 - create release
 
