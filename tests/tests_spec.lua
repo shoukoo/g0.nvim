@@ -223,40 +223,42 @@ describe("g0.test", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
     -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     require("g0.test").test_current()
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test -run TestAdd", match.is_table())
   end)
 
   it("successfully runs TestCurrent with verbose flag", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
     -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     require("g0.test").test_current("-v")
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd -v")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test -run TestAdd -v",
+      match.is_table())
   end)
 
   it("successfully runs TestCurrent with verbose true in config", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
     -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     require("g0.test").test_current("", { gotest = { verbose = true } })
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test -run TestAdd  -v")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test -run TestAdd  -v",
+      match.is_table())
   end)
 
   it("handles failure when not inside a function", function()
     vim.fn.setpos(".", { 0, 12, 0, 0 })
 
     -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     spy.on(vim, "notify")
     require("g0.test").test_current()
-    assert.spy(vim.cmd).was_called(0)
+    assert.spy(vim.fn.jobstart).was_called(0)
     assert.spy(vim.notify).was_called_with("Not inside a function", vim.log.levels.ERROR)
   end)
 
@@ -267,10 +269,10 @@ describe("g0.test", function()
     vim.fn.setpos(".", { 0, 6, 0, 0 })
 
     -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     spy.on(vim, "notify")
     require("g0.test").test_current()
-    assert.spy(vim.cmd).was_called(0)
+    assert.spy(vim.fn.jobstart).was_called(0)
     assert.spy(vim.notify).was_called_with("This is not a Go test file", vim.log.levels.ERROR)
   end)
 
@@ -279,33 +281,31 @@ describe("g0.test", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
 
-    -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     require("g0.test").test_current_dir()
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./...")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test ./...", match.is_table())
   end)
 
   it("successfully runs TestCurrentDir with verbose flag", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
 
-    -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
+
     require("g0.test").test_current_dir("-v")
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./... -v")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test ./... -v", match.is_table())
   end)
 
   it("successfully runs TestCurrentDir with verbose true in config", function()
     local cmd = " silent exe 'e " .. tempFolderPath .. "/test.go'"
     vim.cmd(cmd)
 
-    -- spy the vim cmd and then inspect the output
-    spy.on(vim, "cmd")
+    spy.on(vim.fn, "jobstart")
     require("g0.test").test_current_dir("", { gotest = { verbose = true } })
-    assert.spy(vim.cmd).was_called(1)
-    assert.spy(vim.cmd).was_called_with("term cd " .. tempFolderPath .. " && go test ./...  -v")
+    assert.spy(vim.fn.jobstart).was_called(1)
+    assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test ./...  -v", match.is_table())
   end)
 end)
 
