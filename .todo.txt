@@ -1,5 +1,7 @@
 - rework test 
-  - keep test history
+  - add g0 test history cmd
+  - change title of the floating window
+  - no cursor in floating window
 - add gomodtidy cmd
 - support delve
 - Add debug feature + turn on based on the default config
