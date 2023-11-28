@@ -1,7 +1,7 @@
 local utils = require("g0.utils")
 local M = {}
 
-local float_win = function(buf, cmd)
+local float_win = function(buf, title)
   local width = math.floor(vim.o.columns * 0.8) -- 50% of the current window width
   local height = math.floor(vim.o.lines * 0.8)
   local row = math.floor((vim.o.lines - height) / 2)
@@ -16,7 +16,7 @@ local float_win = function(buf, cmd)
     style = 'minimal',
     zindex = 250,
     border = "single",
-    title = "press q to quit",
+    title = title .. " | press q to quit",
   })
   return win_id
 end
@@ -36,10 +36,10 @@ M.history = function()
   for _, line in ipairs(history) do
     vim.api.nvim_buf_set_lines(buf, -1, -1, false, line)
   end
-  local win_id = float_win(buf, "test")
+  local win_id = float_win(buf, "G0TestHistory")
 end
 
-M.run= function(args, config, command)
+M.run= function(args, config, command, title)
   -- getting config
   config = config or require("g0.config").defaults
   args = parse_args(args or "", config)
@@ -47,7 +47,7 @@ M.run= function(args, config, command)
   -- creating a commnd
   local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
 
-  local win_id = float_win(buf, command)
+  local win_id = float_win(buf, title)
   vim.api.nvim_buf_set_lines(buf, -1, -1, false, { "> " .. command })
   table.insert(history, { "> " .. command })
 
@@ -108,7 +108,7 @@ M.test_current_dir = function(args, config)
     command = command .. " " .. args
   end
 
-  M.run(args, config, command)
+  M.run(args, config, command, "G0TestCurrentDir")
 end
 
 -- test_current only read the "-v" argument
@@ -141,7 +141,7 @@ M.test_current = function(args, config)
       command = command .. " " .. args
     end
 
-    M.run(args, config, command)
+    M.run(args, config, command, "G0TestCurrent")
   else
     vim.notify("Not inside a function", vim.log.levels.ERROR)
   end
