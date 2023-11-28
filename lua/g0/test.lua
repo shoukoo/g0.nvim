@@ -73,8 +73,8 @@ M.run= function(args, config, command)
         vim.api.nvim_buf_set_lines(buf, -1, -1, false, { "completed" })
         vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
       else
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "error executing command" })
-        vim.api.nvim_win_set_cursor(win_id, { 1, 0 })
+        vim.api.nvim_buf_set_lines(buf, -1, -1, false, { "failed" })
+        vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
       end
 
       vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
