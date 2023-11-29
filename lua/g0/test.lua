@@ -1,4 +1,5 @@
 local utils = require("g0.utils")
+local c = require("g0.config")
 local M = {}
 
 local float_win = function(buf, title)
@@ -29,19 +30,23 @@ local parse_args = function(args, config)
   return args
 end
 
-local history = {}
 
 M.history = function()
   local buf = vim.api.nvim_create_buf(false, true) -- Create a new buffer
-  for _, line in ipairs(history) do
+  for _, line in ipairs(c._state.test_history) do
     vim.api.nvim_buf_set_lines(buf, -1, -1, false, line)
   end
   local win_id = float_win(buf, "G0TestHistory")
+  vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
+    noremap = true,
+    silent = true,
+  })
 end
 
-M.run= function(args, config, command, title)
+M.run = function(args, config, command, title)
   -- getting config
-  config = config or require("g0.config").defaults
+  config = config or c.defaults
   args = parse_args(args or "", config)
 
   -- creating a commnd
@@ -49,7 +54,7 @@ M.run= function(args, config, command, title)
 
   local win_id = float_win(buf, title)
   vim.api.nvim_buf_set_lines(buf, -1, -1, false, { "> " .. command })
-  table.insert(history, { "> " .. command })
+  c.save_history({ "> " .. command })
 
   local job_id = vim.fn.jobstart(command, {
     on_stdout = function(_, data, _)
@@ -58,7 +63,7 @@ M.run= function(args, config, command, title)
         return
       end
       vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
-      table.insert(history, data)
+      c.save_history(data)
       vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
     end,
     on_stderr = function(_, data, _)
