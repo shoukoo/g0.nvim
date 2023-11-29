@@ -1,4 +1,4 @@
-*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 28
+*g0.nvim.txt*         For Neovim >= 0.8.0        Last change: 2023 November 29
 
 ==============================================================================
 Table of Contents                                  *g0.nvim-table-of-contents*
@@ -170,6 +170,12 @@ Run the go test with the integration tag
 >vim
     :G0TestCurrentDir --tag=integration
 <
+
+
+:G0TESTHISTROY ~
+
+Display the Go test results for both the G0TestCurrentDir and G0TestCurrent
+commands.
 
 
 :[RANGE]G0ADDTAGS {ARGS} ~
