@@ -132,6 +132,9 @@ Run the go test with the integration tag
 :G0TestCurrentDir --tag=integration
 ```
 
+### :G0TestHistroy
+Display the Go test results for both the G0TestCurrentDir and G0TestCurrent commands.
+
 ### :[range]G0AddTags {args}
 ![](./media/g0addtags.gif)
 Running plain `:G0AddTags` executes the `gomodifyfiles -file={file dir} -add-tags=json` command to the current file. You can also provide additional valid flags as needed, which are documented in the [gomodifytags](https://github.com/fatih/gomodifytags) repo. Please note that it utilises default values from gomodifytags; for instance, it defaults to using `snake_case` for the tags
