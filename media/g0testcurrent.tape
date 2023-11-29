@@ -1,4 +1,5 @@
 Output g0testcurrent.gif
+Set Padding 20
 Set Shell "zsh"
 Require nvim
 
