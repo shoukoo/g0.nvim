@@ -19,6 +19,11 @@ local float_win = function(buf, title)
     border = "single",
     title = title .. " | press q to quit",
   })
+
+  vim.cmd([[
+      hi GoTestResultFail guifg=#FF4000
+      match GoTestResultFail /--- FAIL/
+  ]])
   return win_id
 end
 
