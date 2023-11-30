@@ -133,7 +133,7 @@ Run the go test with the integration tag
 ```
 
 ### :G0TestHistroy
-Display the Go test results for both the G0TestCurrentDir and G0TestCurrent commands.
+Display the past Go test results from both the G0TestCurrentDir and G0TestCurrent commands.
 
 ### :[range]G0AddTags {args}
 ![](./media/g0addtags.gif)
