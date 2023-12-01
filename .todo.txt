@@ -1,7 +1,4 @@
-- rework test 
-  - add g0 test history cmd
-  - change title of the floating window
-  - no cursor in floating window
+- use go test cmd without cd
 - add gomodtidy cmd
 - support delve
 - Add debug feature + turn on based on the default config
