@@ -87,11 +87,15 @@ M.run = function(args, config, command, title)
         vim.api.nvim_win_set_cursor(win_id, { vim.fn.line('$'), 0 })
       end
 
-      vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua vim.api.nvim_win_close(' .. win_id .. ', true)<CR>', {
-        noremap = true,
-        silent = true,
-      })
     end,
+  })
+
+  -- Set the key mapping using luaeval
+  vim.api.nvim_buf_set_keymap(buf, 'n', 'q',
+    [[:lua vim.api.nvim_win_close(]] .. win_id .. [[, true) vim.fn.jobstop(]] .. job_id .. [[)<CR>]], {
+    noremap = true,
+    silent = true,
+    expr = false,
   })
 
   -- Asynchronous timer to check for updates every 500 milliseconds
