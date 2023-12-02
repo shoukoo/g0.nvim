@@ -30,7 +30,11 @@ end
 local parse_args = function(args, config)
   local is_verbose = config.gotest.verbose
   if not string.match(args, utils.escape_pattern("-v")) and is_verbose then
-    args = args .. " -v"
+    local flag = "-v"
+    if string.sub(args, -1) ~= " " then
+      flag = " " .. flag
+    end
+    args = args .. flag
   end
   return args
 end
@@ -117,9 +121,13 @@ M.test_current_dir = function(args, config)
   local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
   local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
 
-  local command = "cd " .. current_directory .. " && go test ./..."
+  local command = "go test ./" .. current_directory .. "/..."
   if args and args ~= "" then
-    command = command .. " " .. args
+    -- if no space pre append to args then add one
+    if string.sub(args, 1, 1) ~= " " then
+      args = " " .. args
+    end
+    command = command .. args
   end
 
   M.run(args, config, command, "G0TestCurrentDir")
@@ -150,9 +158,13 @@ M.test_current = function(args, config)
 
     local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
     local function_name = vim.treesitter.get_node_text(node:child(1), 0)
-    local command = "cd " .. current_directory .. " && go test -run " .. function_name
+    local command = "go test ./" .. current_directory .. "/... -run=" .. function_name
     if args and args ~= "" then
-      command = command .. " " .. args
+      -- if no space pre append to args then add one
+      if string.sub(args, 1, 1) ~= " " then
+        args = " " .. args
+      end
+      command = command .. args
     end
 
     M.run(args, config, command, "G0TestCurrent")
