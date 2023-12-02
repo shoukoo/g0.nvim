@@ -121,7 +121,7 @@ M.test_current_dir = function(args, config)
   local buffer_name = vim.fn.bufname('%') -- Get the full path of the current buffer
   local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
 
-  local command = "go test ./" .. current_directory .. "/..."
+  local command = "cd " .. current_directory .. " && go test ./..."
   if args and args ~= "" then
     -- if no space pre append to args then add one
     if string.sub(args, 1, 1) ~= " " then
@@ -158,7 +158,7 @@ M.test_current = function(args, config)
 
     local current_directory = vim.fn.fnamemodify(buffer_name, ':h') -- Get the directory part
     local function_name = vim.treesitter.get_node_text(node:child(1), 0)
-    local command = "go test ./" .. current_directory .. "/... -run=" .. function_name
+    local command = "cd " .. current_directory .. " && go test -run=" .. function_name
     if args and args ~= "" then
       -- if no space pre append to args then add one
       if string.sub(args, 1, 1) ~= " " then
