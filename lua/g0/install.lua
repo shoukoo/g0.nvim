@@ -5,6 +5,7 @@ local M = {}
 local pkgs = {
   goimports = 'golang.org/x/tools/cmd/goimports',
   gomodifytags = 'github.com/fatih/gomodifytags',
+  delve = 'github.com/go-delve/delve/cmd/dlv'
   -- gopls = 'golang.org/x/tools/gopls',
   -- govulncheck = 'golang.org/x/vuln/cmd/govulncheck',
 
