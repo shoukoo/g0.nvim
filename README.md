@@ -78,11 +78,12 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 ### :G0Install {pkg}
 These are the available packages that can be installed using the command. To add a new package, you can add it in the lua/g0/install.lua, or manually install it
 
-| Pkg          | Repository URL                            |
-|--------------- | ----------------------------------------- |
+| Pkg           | Repository URL                           |
+|---------------| ---------------------------------------- |
 | goimports     | golang.org/x/tools/cmd/goimports         |
-| gomodifytags  | github.com/fatih/gomodifytags             |
+| gomodifytags  | github.com/fatih/gomodifytags            |
 | gopls         | golang.org/x/tools/gopls                 |
+| delve         | github.com/go-delve/delve/cmd/dlv        |
 
 To install the goimports pkg
 
