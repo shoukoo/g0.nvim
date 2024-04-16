@@ -57,7 +57,6 @@ M.lsp_imports = function(config)
   params.context = { only = { "source.organizeImports" } }
 
   local gopls = M.client()
-  print(gopls)
   if gopls == nil then
     vim.notify('gopls not found', vim.log.levels.ERROR)
     return
