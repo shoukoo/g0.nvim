@@ -42,6 +42,9 @@ M.save_history = function(history)
   end
 end
 
+M.override_default = function(config)
+  M.defaults = config
+end
 
 M.merge = function(opts)
   return vim.tbl_deep_extend("force", {}, M.defaults, opts or {})
