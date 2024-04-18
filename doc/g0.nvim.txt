@@ -1,4 +1,4 @@
-*g0.nvim.txt*          For Neovim >= 0.8.0          Last change: 2024 March 25
+*g0.nvim.txt*          For Neovim >= 0.8.0          Last change: 2024 April 18
 
 ==============================================================================
 Table of Contents                                  *g0.nvim-table-of-contents*
@@ -8,6 +8,7 @@ Table of Contents                                  *g0.nvim-table-of-contents*
   - Installation                                |g0.nvim-g0.nvim-installation|
   - Configuration                              |g0.nvim-g0.nvim-configuration|
   - Commands                                        |g0.nvim-g0.nvim-commands|
+2. Links                                                       |g0.nvim-links|
 
 ==============================================================================
 1. g0.nvim                                                   *g0.nvim-g0.nvim*
