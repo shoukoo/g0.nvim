@@ -162,7 +162,6 @@ describe("g0.format", function()
   it("run goimports", function()
 
     -- read the golden file to get the expected result
-    local cur_dir = vim.fn.expand('%:p:h')
     local expected = vim.fn.join(vim.fn.readfile(cur_dir .. '/tests/testData/format/format_golden.go'), '\n')
 
     -- get the unimported go code and write it to a temporary file
@@ -174,6 +173,7 @@ describe("g0.format", function()
     -- edit the temporary file and call goimports func
     local cmd = " silent exe 'e " .. name .. "'"
     vim.cmd(cmd)
+
     require('g0.format').goimports()
 
     -- wait 300 for the file to be formatted
@@ -208,7 +208,7 @@ describe("g0.test", function()
     local sourceFolder = cur_dir .. '/tests/testData/test/'
     tempFolderPath = utils.mktemp()
 
-    local moveCommand = "cp -r " .. sourceFolder .. "/*" .. " " .. tempFolderPath
+    local moveCommand = "cp -r " .. sourceFolder .. "*" .. " " .. tempFolderPath
     local success = os.execute(moveCommand)
     if not success then
       error("Error: Failed to move folder.")
@@ -225,6 +225,7 @@ describe("g0.test", function()
     -- spy the vim cmd and then inspect the output
     spy.on(vim.fn, "jobstart")
     require("g0.test").test_current()
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test -run=TestAdd", match.is_table())
   end)
@@ -235,16 +236,18 @@ describe("g0.test", function()
     -- spy the vim cmd and then inspect the output
     spy.on(vim.fn, "jobstart")
     require("g0.test").test_current("-v")
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test -run=TestAdd -v", match.is_table())
   end)
-
+-- 
   it("successfully runs TestCurrent with verbose true in config", function()
     vim.fn.setpos(".", { 0, 6, 5, 0 })
 
     -- spy the vim cmd and then inspect the output
     spy.on(vim.fn, "jobstart")
     require("g0.test").test_current("", { gotest = { verbose = true } })
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test -run=TestAdd -v", match.is_table())
   end)
@@ -256,6 +259,7 @@ describe("g0.test", function()
     spy.on(vim.fn, "jobstart")
     spy.on(vim, "notify")
     require("g0.test").test_current()
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(0)
     assert.spy(vim.notify).was_called_with("Not inside a function", vim.log.levels.ERROR)
   end)
@@ -270,6 +274,7 @@ describe("g0.test", function()
     spy.on(vim.fn, "jobstart")
     spy.on(vim, "notify")
     require("g0.test").test_current()
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(0)
     assert.spy(vim.notify).was_called_with("This is not a Go test file", vim.log.levels.ERROR)
   end)
@@ -281,6 +286,7 @@ describe("g0.test", function()
 
     spy.on(vim.fn, "jobstart")
     require("g0.test").test_current_dir()
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test ./...", match.is_table())
   end)
@@ -292,6 +298,7 @@ describe("g0.test", function()
     spy.on(vim.fn, "jobstart")
 
     require("g0.test").test_current_dir("-v")
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test ./... -v", match.is_table())
   end)
@@ -302,6 +309,7 @@ describe("g0.test", function()
 
     spy.on(vim.fn, "jobstart")
     require("g0.test").test_current_dir("", { gotest = { verbose = true } })
+    vim.wait(1000, function() end)
     assert.spy(vim.fn.jobstart).was_called(1)
     assert.spy(vim.fn.jobstart).was_called_with("cd " .. tempFolderPath .. " && go test ./... -v", match.is_table())
   end)

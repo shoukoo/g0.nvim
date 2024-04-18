@@ -1,7 +1,7 @@
 phony: test vhs
 
 test:
-	nvim --headless --cleanup -u tests/init.vim -c "PlenaryBustedDirectory tests {minimal_init = 'tests/init.vim'}"
+	nvim --headless --cleanup -u tests/init.vim -c "PlenaryBustedDirectory tests {minimal_init = 'tests/init.vim', sequential = true}"
 
 
 vhs:
